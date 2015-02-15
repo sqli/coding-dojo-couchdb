@@ -52,51 +52,18 @@ angular.module('app').controller('AppCtrl', function ($scope, avatarsService, $m
     function showActions($event) {
 
         $mdBottomSheet.show({
-            parent: angular.element(document.getElementById('content')),
-            template: '<md-bottom-sheet class="md-list md-has-header">' +
-                '<md-subheader>Avatar Actions</md-subheader>' +
-                '<md-list>' +
-                '<md-item ng-repeat="item in vm.items">' +
-                '<md-button ng-click="vm.performAction(item)">{{item.name}}</md-button>' +
-                '</md-item>' +
-                '</md-list>' +
-                '</md-bottom-sheet>',
-            bindToController : true,
-            controllerAs: "vm",
-            controller: [ '$mdBottomSheet', AvatarSheetController],
+            templateUrl: 'src/bottom-sheet-grid-template.html',
+            controller: 'GridBottomSheetCtrl',
             targetEvent: $event
         }).then(function(clickedItem) {
-            $log.debug( clickedItem.name + ' clicked!');
+            $mdToast.show(
+                $mdToast.simple()
+                    .content(clickedItem.name + ' is not implemented!')
+                    .position("bottom right")
+                    .hideDelay(3000)
+            );
         });
 
-        /**
-         * Bottom Sheet controller for the Avatar Actions
-         */
-        function AvatarSheetController( $mdBottomSheet ) {
-            this.items = [
-                { name: 'Share', icon: 'share' },
-                { name: 'Copy', icon: 'copy' },
-                { name: 'Impersonate', icon: 'impersonate' },
-                { name: 'Singalong', icon: 'singalong' }
-            ];
-            this.performAction = function(action) {
-                $mdToast.show(
-                    $mdToast.simple()
-                        .content('Simple Toast!')
-                        .hideDelay(3000)
-                );
-
-                $mdDialog.show(
-                    $mdDialog.alert()
-                        .title('This is an alert title')
-                        .content('You can specify some description text in here.')
-                        .ariaLabel('Password notification')
-                        .ok('Got it!')
-                        .targetEvent(action)
-                );
-                $mdBottomSheet.hide(action);
-            };
-        }
     }
 
 });
