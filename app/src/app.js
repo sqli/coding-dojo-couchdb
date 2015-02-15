@@ -5,7 +5,7 @@ angular.module('app', [
 
     $mdThemingProvider.theme('default')
         .primaryPalette('blue')
-        .accentPalette('light-blue');
+        .accentPalette('purple');
 
 }).run(function(){
 

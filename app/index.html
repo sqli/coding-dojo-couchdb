@@ -18,11 +18,12 @@
 
     <body ng-app="app" ng-controller="AppCtrl" layout="column">
 
-        <md-toolbar layout="row">
+        <md-toolbar layout="column">
             <button ng-click="toggleSidenav('left')" hide-gt-sm class="menuBtn">
                 <span class="visuallyhidden">Menu</span>
             </button>
             <h1>AngularJS Material App</h1>
+            <md-progress-linear class="md-accent" md-mode="indeterminate"></md-progress-linear>
         </md-toolbar>
 
         <!--
@@ -56,11 +57,85 @@
                 fill the available horizontal display area on the right side
             -->
 
-            <div layout="column" flex class="content-wrapper" id="content">
-                <md-content layout="column" flex class="md-padding md-whiteframe-z1">
-                    <span class="{{selected.classname}} avatar" role="img" aria-label="{{selected.name}}"></span>
-                    <h2>{{selected.name}}</h2>
-                    <p>{{selected.content}}</p>
+            <div layout="column" flex layout-fill class="content-wrapper" id="content">
+                <md-content>
+                    <section>
+                        <md-subheader class="md-primary">Unread Messages</md-subheader>
+                        <md-list layout="column">
+                            <md-item ng-repeat="message in messages">
+                                <md-item-content>
+                                    <div class="md-tile-left">
+                                        <span class="{{selected.classname}} avatar" role="img" aria-label="{{selected.name}}"></span>
+                                    </div>
+                                    <div class="md-tile-content">
+                                        <h3>{{message.what}}</h3>
+                                        <h4>{{message.who}}</h4>
+                                        <p>
+                                            {{message.notes}}
+                                        </p>
+                                    </div>
+                                </md-item-content>
+                            </md-item>
+                        </md-list>
+                    </section>
+                    <section>
+                        <md-subheader class="md-warn">Late Messages</md-subheader>
+                        <md-list layout="column">
+                            <md-item ng-repeat="message in messages">
+                                <md-item-content>
+                                    <div class="md-tile-left">
+                                        <span class="{{selected.classname}} avatar" role="img" aria-label="{{selected.name}}"></span>
+                                    </div>
+                                    <div class="md-tile-content">
+                                        <h3>{{message.what}}</h3>
+                                        <h4>{{message.who}}</h4>
+                                        <p>
+                                            {{message.notes}}
+                                        </p>
+                                    </div>
+                                </md-item-content>
+                            </md-item>
+                        </md-list>
+                    </section>
+                    <section>
+                        <md-subheader>Read Messages</md-subheader>
+                        <md-list layout="column">
+                            <md-item ng-repeat="message in messages">
+                                <md-item-content>
+                                    <div class="md-tile-left">
+                                        <span class="{{selected.classname}} avatar" role="img" aria-label="{{selected.name}}"></span>
+                                    </div>
+                                    <div class="md-tile-content">
+                                        <h3>{{message.what}}</h3>
+                                        <h4>{{message.who}}</h4>
+                                        <p>
+                                            {{message.notes}}
+                                        </p>
+                                    </div>
+                                </md-item-content>
+                            </md-item>
+                        </md-list>
+                    </section>
+                    <section>
+                        <md-subheader class="md-accent">Archived messages</md-subheader>
+                        <md-list layout="column">
+                            <md-item ng-repeat="message in messages">
+                                <md-item-content>
+                                    <div class="md-tile-left">
+                                        <span class="{{selected.classname}} avatar" role="img" aria-label="{{selected.name}}"></span>
+                                    </div>
+                                    <div class="md-tile-content">
+                                        <h3>{{message.what}}</h3>
+                                        <h4>{{message.who}}</h4>
+                                        <p>
+                                            {{message.notes}}
+                                        </p>
+                                    </div>
+                                </md-item-content>
+                            </md-item>
+                        </md-list>
+                    </section>
+
                     <md-button class="action actionBtn" ng-click="showActions($event)">
                         <span class="visuallyhidden">Actions</span>
                     </md-button>
