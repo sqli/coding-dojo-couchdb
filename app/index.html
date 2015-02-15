@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>Couchdb Angular Materials</title>
+
+        <!-- build:css styles/vendor.css -->
+        <link rel="stylesheet" href="bower_components/angular-material/angular-material.css" />
+        <!-- endbuild -->
+
+        <!-- build:css styles/main.css -->
+        <link rel="stylesheet" href="src/avatar/avatars.css" />
+        <link rel="stylesheet" href="main.css" />
+        <!-- endbuild -->
+
+    </head>
+
+    <body ng-app="app" ng-controller="AppCtrl" layout="column">
+
+        <md-toolbar layout="row">
+            <button ng-click="toggleSidenav('left')" hide-gt-sm class="menuBtn">
+                <span class="visuallyhidden">Menu</span>
+            </button>
+            <h1>AngularJS Material App</h1>
+        </md-toolbar>
+
+        <!--
+             Use `flex` [below] to have the side bar and content area
+             fill the available vertical display area
+         -->
+
+        <div layout="row" flex>
+
+            <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$media('gt-sm')">
+                <md-list>
+                    <md-item ng-repeat="it in avatars">
+                        <md-item-content>
+                            <md-button ng-click="selectAvatar(it)" ng-class="{'selected' : it === selected }">
+                                <span class="{{it.classname}} avatar"></span>
+                                {{it.name}}
+                            </md-button>
+                        </md-item-content>
+                    </md-item>
+                </md-list>
+            </md-sidenav>
+
+            <!--
+                Use `flex` [below] to have the content area
+                fill the available horizontal display area on the right side
+            -->
+
+            <div layout="column" flex class="content-wrapper" id="content">
+                <md-content layout="column" flex class="md-padding md-whiteframe-z1">
+                    <span class="{{selected.classname}} avatar" role="img" aria-label="{{selected.name}}"></span>
+                    <h2>{{selected.name}}</h2>
+                    <p>{{selected.content}}</p>
+                    <md-button class="action actionBtn" ng-click="showActions($event)">
+                        <span class="visuallyhidden">Actions</span>
+                    </md-button>
+                </md-content>
+            </div>
+        </div>
+
+        <!-- build:js scripts/vendor.js -->
+        <script src="bower_components/angular/angular.js"></script>
+        <script src="bower_components/angular-animate/angular-animate.js"></script>
+        <script src="bower_components/angular-aria/angular-aria.js"></script>
+        <script src="bower_components/angular-material/angular-material.js"></script>
+        <script src="bower_components/pouchdb/dist/pouchdb.js"></script>
+        <script src="bower_components/pouchdb-authentication/dist/pouchdb.authentication.min.js"></script>
+        <!-- endbuild -->
+
+        <!-- build:js scripts/main.js -->
+        <script src="src/app.js"></script>
+        <script src="src/controller.js"></script>
+        <script src="src/avatar/service.js"></script>
+        <!-- endbuild -->
+
+        <!-- build:js scripts/templates.js -->
+        <script></script>
+        <!-- endbuild -->
+
+    </body>
+
+</html>
