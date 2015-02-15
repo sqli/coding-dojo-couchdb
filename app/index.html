@@ -34,7 +34,13 @@
 
             <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$media('gt-sm')">
                 <md-list>
-                    <md-item ng-repeat="it in avatars">
+                    <md-item>
+                        <md-input-container>
+                            <label>Find a friend</label>
+                            <input ng-model="searchedFriend">
+                        </md-input-container>
+                    </md-item>
+                    <md-item ng-repeat="it in avatars | filter:{name:searchedFriend}">
                         <md-item-content>
                             <md-button ng-click="selectAvatar(it)" ng-class="{'selected' : it === selected }">
                                 <span class="{{it.classname}} avatar"></span>

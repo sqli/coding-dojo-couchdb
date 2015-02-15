@@ -4,8 +4,8 @@ angular.module('app', [
 ]).config(function($mdThemingProvider) {
 
     $mdThemingProvider.theme('default')
-        .primaryColor('blue')
-        .accentColor('light-blue');
+        .primaryPalette('blue')
+        .accentPalette('light-blue');
 
 }).run(function(){
 

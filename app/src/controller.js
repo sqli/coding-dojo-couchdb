@@ -6,6 +6,7 @@ angular.module('app').controller('AppCtrl', function ($scope, avatarsService, $m
     $scope.selectAvatar  = selectAvatar;
     $scope.toggleSidenav = toggleSideNav;
     $scope.showActions   = showActions;
+    $scope.searchedFriend = '';
 
     loadAvatars();
 
