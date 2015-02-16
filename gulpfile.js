@@ -37,6 +37,12 @@ gulp.task('fonts', function () {
     ]).pipe(gulp.dest('dist/fonts'));
 });
 
+gulp.task('svg', function () {
+    return gulp.src([
+        'app/svg/*.svg'
+    ]).pipe(gulp.dest('dist/styles/svg'));
+});
+
 gulp.task('template', function () {
     return gulp.src(['app/app_components/**/*.html', 'app/src/**/*.html']).pipe(angularTemplatecache({
         module: 'app', root: 'src/'
@@ -75,7 +81,7 @@ gulp.task('serve', ['styles', 'watch'], function () {
     open('http://localhost:9000/#/');
 });
 
-gulp.task('dist', ['i18n','fonts' , 'html', 'template']);
+gulp.task('dist', ['i18n','fonts', 'svg', 'html', 'template']);
 
 gulp.task('deploy', ['dist'], function () {
     return gulp.src('dist/**/*').pipe(deploy({
