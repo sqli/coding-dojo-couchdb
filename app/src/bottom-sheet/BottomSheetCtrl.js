@@ -1,4 +1,4 @@
-angular.module('app').controller('GridBottomSheetCtrl', function($scope, $mdBottomSheet) {
+angular.module('app').controller('BottomSheetCtrl', function($scope, $mdBottomSheet, $mdToast) {
     $scope.items = [
         { name: 'Hangout', icon: 'hangout' },
         { name: 'Mail', icon: 'mail' },
@@ -9,6 +9,12 @@ angular.module('app').controller('GridBottomSheetCtrl', function($scope, $mdBott
     ];
     $scope.listItemClick = function($index) {
         var clickedItem = $scope.items[$index];
+        $mdToast.show(
+            $mdToast.simple()
+                .content(clickedItem.name + ' is not implemented!')
+                .position("bottom right")
+                .hideDelay(3000)
+        );
         $mdBottomSheet.hide(clickedItem);
     };
 });

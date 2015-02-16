@@ -1,12 +1,3 @@
-section li {
-        display: inline;
-        display: inline-block;
-        background-color: #fff;
-        position: relative;
-        vertical-align: top;
-        cursor: default
-    }
-
 .avatar {
         position: relative;
         width: 128px;
@@ -24,7 +15,7 @@ section li {
 .svg-1 {
 	background-position: 33.333333333333336% 0;
 	background-repeat: no-repeat;
-	background-image: url(spritesheets/avatars.svg);
+	background-image: url(svg/avatars.svg);
 }
 
 .svg-1-dims {
@@ -35,7 +26,7 @@ section li {
 .svg-10 {
 	background-position: 66.66666666666667% 66.66666666666667%;
 	background-repeat: no-repeat;
-	background-image: url(spritesheets/avatars.svg);
+	background-image: url(svg/avatars.svg);
 }
 
 .svg-10-dims {
@@ -46,7 +37,7 @@ section li {
 .svg-11 {
 	background-position: 0 33.333333333333336%;
 	background-repeat: no-repeat;
-	background-image: url(spritesheets/avatars.svg);
+	background-image: url(svg/avatars.svg);
 }
 
 .svg-11-dims {
@@ -57,7 +48,7 @@ section li {
 .svg-12 {
 	background-position: 33.333333333333336% 33.333333333333336%;
 	background-repeat: no-repeat;
-	background-image: url(spritesheets/avatars.svg);
+	background-image: url(svg/avatars.svg);
 }
 
 .svg-12-dims {
@@ -68,7 +59,7 @@ section li {
 .svg-13 {
 	background-position: 66.66666666666667% 0;
 	background-repeat: no-repeat;
-	background-image: url(spritesheets/avatars.svg);
+	background-image: url(svg/avatars.svg);
 }
 
 .svg-13-dims {
@@ -79,7 +70,7 @@ section li {
 .svg-14 {
 	background-position: 66.66666666666667% 33.333333333333336%;
 	background-repeat: no-repeat;
-	background-image: url(spritesheets/avatars.svg);
+	background-image: url(svg/avatars.svg);
 }
 
 .svg-14-dims {
@@ -90,7 +81,7 @@ section li {
 .svg-15 {
 	background-position: 0 66.66666666666667%;
 	background-repeat: no-repeat;
-	background-image: url(spritesheets/avatars.svg);
+	background-image: url(svg/avatars.svg);
 }
 
 .svg-15-dims {
@@ -101,7 +92,7 @@ section li {
 .svg-16 {
 	background-position: 33.333333333333336% 66.66666666666667%;
 	background-repeat: no-repeat;
-	background-image: url(spritesheets/avatars.svg);
+	background-image: url(svg/avatars.svg);
 }
 
 .svg-16-dims {
@@ -112,7 +103,7 @@ section li {
 .svg-2 {
 	background-position: 0 0;
 	background-repeat: no-repeat;
-	background-image: url(spritesheets/avatars.svg);
+	background-image: url(svg/avatars.svg);
 }
 
 .svg-2-dims {
@@ -123,7 +114,7 @@ section li {
 .svg-3 {
 	background-position: 100% 0;
 	background-repeat: no-repeat;
-	background-image: url(spritesheets/avatars.svg);
+	background-image: url(svg/avatars.svg);
 }
 
 .svg-3-dims {
@@ -134,7 +125,7 @@ section li {
 .svg-4 {
 	background-position: 100% 33.333333333333336%;
 	background-repeat: no-repeat;
-	background-image: url(spritesheets/avatars.svg);
+	background-image: url(svg/avatars.svg);
 }
 
 .svg-4-dims {
@@ -145,7 +136,7 @@ section li {
 .svg-5 {
 	background-position: 100% 66.66666666666667%;
 	background-repeat: no-repeat;
-	background-image: url(spritesheets/avatars.svg);
+	background-image: url(svg/avatars.svg);
 }
 
 .svg-5-dims {
@@ -156,7 +147,7 @@ section li {
 .svg-6 {
 	background-position: 0 100%;
 	background-repeat: no-repeat;
-	background-image: url(spritesheets/avatars.svg);
+	background-image: url(svg/avatars.svg);
 }
 
 .svg-6-dims {
@@ -167,7 +158,7 @@ section li {
 .svg-7 {
 	background-position: 33.333333333333336% 100%;
 	background-repeat: no-repeat;
-	background-image: url(spritesheets/avatars.svg);
+	background-image: url(svg/avatars.svg);
 }
 
 .svg-7-dims {
@@ -178,7 +169,7 @@ section li {
 .svg-8 {
 	background-position: 66.66666666666667% 100%;
 	background-repeat: no-repeat;
-	background-image: url(spritesheets/avatars.svg);
+	background-image: url(svg/avatars.svg);
 }
 
 .svg-8-dims {
@@ -189,7 +180,7 @@ section li {
 .svg-9 {
 	background-position: 100% 100%;
 	background-repeat: no-repeat;
-	background-image: url(spritesheets/avatars.svg);
+	background-image: url(svg/avatars.svg);
 }
 
 .svg-9-dims {

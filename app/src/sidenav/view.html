@@ -1,0 +1,16 @@
+<md-list>
+    <md-item>
+        <md-input-container>
+            <label>Find a friend</label>
+            <input ng-model="searchedFriend">
+        </md-input-container>
+    </md-item>
+    <md-item ng-repeat="it in avatars | filter:{name:searchedFriend}">
+        <md-item-content>
+            <md-button ng-click="selectAvatar(it)" ng-class="{'selected' : it === selected }">
+                <span class="{{it.classname}} avatar"></span>
+                {{it.name}}
+            </md-button>
+        </md-item-content>
+    </md-item>
+</md-list>

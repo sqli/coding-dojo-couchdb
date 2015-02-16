@@ -1,0 +1,76 @@
+<section>
+    <md-subheader class="md-primary">Unread Messages</md-subheader>
+    <md-list layout="column">
+        <md-item ng-repeat="message in messages">
+            <md-item-content>
+                <div class="md-tile-left">
+                    <span class="{{selected.classname}} avatar" role="img" aria-label="{{selected.name}}"></span>
+                </div>
+                <div class="md-tile-content">
+                    <h3>{{message.what}}</h3>
+                    <h4>{{message.who}}</h4>
+                    <p>
+                        {{message.notes}}
+                    </p>
+                </div>
+            </md-item-content>
+        </md-item>
+    </md-list>
+</section>
+<section>
+    <md-subheader class="md-warn">Late Messages</md-subheader>
+    <md-list layout="column">
+        <md-item ng-repeat="message in messages">
+            <md-item-content>
+                <div class="md-tile-left">
+                    <span class="{{selected.classname}} avatar" role="img" aria-label="{{selected.name}}"></span>
+                </div>
+                <div class="md-tile-content">
+                    <h3>{{message.what}}</h3>
+                    <h4>{{message.who}}</h4>
+                    <p>
+                        {{message.notes}}
+                    </p>
+                </div>
+            </md-item-content>
+        </md-item>
+    </md-list>
+</section>
+<section>
+    <md-subheader>Read Messages</md-subheader>
+    <md-list layout="column">
+        <md-item ng-repeat="message in messages">
+            <md-item-content>
+                <div class="md-tile-left">
+                    <span class="{{selected.classname}} avatar" role="img" aria-label="{{selected.name}}"></span>
+                </div>
+                <div class="md-tile-content">
+                    <h3>{{message.what}}</h3>
+                    <h4>{{message.who}}</h4>
+                    <p>
+                        {{message.notes}}
+                    </p>
+                </div>
+            </md-item-content>
+        </md-item>
+    </md-list>
+</section>
+<section>
+    <md-subheader class="md-accent">Archived messages</md-subheader>
+    <md-list layout="column">
+        <md-item ng-repeat="message in messages">
+            <md-item-content>
+                <div class="md-tile-left">
+                    <span class="{{selected.classname}} avatar" role="img" aria-label="{{selected.name}}"></span>
+                </div>
+                <div class="md-tile-content">
+                    <h3>{{message.what}}</h3>
+                    <h4>{{message.who}}</h4>
+                    <p>
+                        {{message.notes}}
+                    </p>
+                </div>
+            </md-item-content>
+        </md-item>
+    </md-list>
+</section>

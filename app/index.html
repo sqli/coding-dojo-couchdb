@@ -9,133 +9,24 @@
         <!-- endbuild -->
 
         <!-- build:css styles/main.css -->
-        <link rel="stylesheet" href="src/avatar/avatars.css" />
-        <link rel="stylesheet" href="src/sheets.css" />
         <link rel="stylesheet" href="main.css" />
         <!-- endbuild -->
 
     </head>
 
-    <body ng-app="app" ng-controller="AppCtrl" layout="column">
+    <body ng-app="app" layout="column">
 
-        <md-toolbar layout="column">
-            <button ng-click="toggleSidenav('left')" hide-gt-sm class="menuBtn">
-                <span class="visuallyhidden">Menu</span>
-            </button>
-            <h1>AngularJS Material App</h1>
-            <md-progress-linear class="md-accent" md-mode="indeterminate"></md-progress-linear>
-        </md-toolbar>
-
-        <!--
-             Use `flex` [below] to have the side bar and content area
-             fill the available vertical display area
-         -->
+        <md-toolbar layout="column" ui-view="toolbar"></md-toolbar>
 
         <div layout="row" flex>
-
-            <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$media('gt-sm')">
-                <md-list>
-                    <md-item>
-                        <md-input-container>
-                            <label>Find a friend</label>
-                            <input ng-model="searchedFriend">
-                        </md-input-container>
-                    </md-item>
-                    <md-item ng-repeat="it in avatars | filter:{name:searchedFriend}">
-                        <md-item-content>
-                            <md-button ng-click="selectAvatar(it)" ng-class="{'selected' : it === selected }">
-                                <span class="{{it.classname}} avatar"></span>
-                                {{it.name}}
-                            </md-button>
-                        </md-item-content>
-                    </md-item>
-                </md-list>
+            <md-sidenav class="md-sidenav-left md-whiteframe-z2"
+                        md-component-id="left"
+                        md-is-locked-open="$media('gt-sm')"
+                        ui-view="sidenav">
             </md-sidenav>
-
-            <!--
-                Use `flex` [below] to have the content area
-                fill the available horizontal display area on the right side
-            -->
-
             <div layout="column" flex layout-fill class="content-wrapper" id="content">
                 <md-content>
-                    <section>
-                        <md-subheader class="md-primary">Unread Messages</md-subheader>
-                        <md-list layout="column">
-                            <md-item ng-repeat="message in messages">
-                                <md-item-content>
-                                    <div class="md-tile-left">
-                                        <span class="{{selected.classname}} avatar" role="img" aria-label="{{selected.name}}"></span>
-                                    </div>
-                                    <div class="md-tile-content">
-                                        <h3>{{message.what}}</h3>
-                                        <h4>{{message.who}}</h4>
-                                        <p>
-                                            {{message.notes}}
-                                        </p>
-                                    </div>
-                                </md-item-content>
-                            </md-item>
-                        </md-list>
-                    </section>
-                    <section>
-                        <md-subheader class="md-warn">Late Messages</md-subheader>
-                        <md-list layout="column">
-                            <md-item ng-repeat="message in messages">
-                                <md-item-content>
-                                    <div class="md-tile-left">
-                                        <span class="{{selected.classname}} avatar" role="img" aria-label="{{selected.name}}"></span>
-                                    </div>
-                                    <div class="md-tile-content">
-                                        <h3>{{message.what}}</h3>
-                                        <h4>{{message.who}}</h4>
-                                        <p>
-                                            {{message.notes}}
-                                        </p>
-                                    </div>
-                                </md-item-content>
-                            </md-item>
-                        </md-list>
-                    </section>
-                    <section>
-                        <md-subheader>Read Messages</md-subheader>
-                        <md-list layout="column">
-                            <md-item ng-repeat="message in messages">
-                                <md-item-content>
-                                    <div class="md-tile-left">
-                                        <span class="{{selected.classname}} avatar" role="img" aria-label="{{selected.name}}"></span>
-                                    </div>
-                                    <div class="md-tile-content">
-                                        <h3>{{message.what}}</h3>
-                                        <h4>{{message.who}}</h4>
-                                        <p>
-                                            {{message.notes}}
-                                        </p>
-                                    </div>
-                                </md-item-content>
-                            </md-item>
-                        </md-list>
-                    </section>
-                    <section>
-                        <md-subheader class="md-accent">Archived messages</md-subheader>
-                        <md-list layout="column">
-                            <md-item ng-repeat="message in messages">
-                                <md-item-content>
-                                    <div class="md-tile-left">
-                                        <span class="{{selected.classname}} avatar" role="img" aria-label="{{selected.name}}"></span>
-                                    </div>
-                                    <div class="md-tile-content">
-                                        <h3>{{message.what}}</h3>
-                                        <h4>{{message.who}}</h4>
-                                        <p>
-                                            {{message.notes}}
-                                        </p>
-                                    </div>
-                                </md-item-content>
-                            </md-item>
-                        </md-list>
-                    </section>
-
+                    <section ui-view="content"></section>
                     <md-button class="action actionBtn" ng-click="showActions($event)">
                         <span class="visuallyhidden">Actions</span>
                     </md-button>
@@ -145,6 +36,7 @@
 
         <!-- build:js scripts/vendor.js -->
         <script src="bower_components/angular/angular.js"></script>
+        <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
         <script src="bower_components/angular-animate/angular-animate.js"></script>
         <script src="bower_components/angular-aria/angular-aria.js"></script>
         <script src="bower_components/angular-material/angular-material.js"></script>
@@ -154,9 +46,12 @@
 
         <!-- build:js scripts/main.js -->
         <script src="src/app.js"></script>
-        <script src="src/controller.js"></script>
-        <script src="src/GridBottomSheetCtrl.js"></script>
-        <script src="src/avatar/service.js"></script>
+        <script src="src/toolbar/ToolbarCtrl.js"></script>
+        <script src="src/sidenav/SidenavCtrl.js"></script>
+        <script src="src/message/MessageCtrl.js"></script>
+        <script src="src/bottom-sheet/BottomSheetCtrl.js"></script>
+        <script src="src/avatar/AvatarService.js"></script>
+        <script src="src/message/MessageService.js"></script>
         <!-- endbuild -->
 
         <!-- build:js scripts/templates.js -->
