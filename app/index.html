@@ -16,7 +16,7 @@
 
     <body ng-app="app" layout="column">
 
-        <md-toolbar layout="column" ui-view="toolbar"></md-toolbar>
+        <md-toolbar layout="row" ui-view="toolbar"></md-toolbar>
 
         <div layout="row" flex>
             <md-sidenav class="md-sidenav-left md-whiteframe-z2"
@@ -24,7 +24,7 @@
                         md-is-locked-open="$media('gt-sm')"
                         ui-view="sidenav">
             </md-sidenav>
-            <div layout="column" flex layout-fill class="content-wrapper" id="content">
+            <div layout="column" flex class="content-wrapper" id="content">
                 <md-content>
                     <section ui-view="content"></section>
                     <md-button class="action actionBtn" ng-click="showActions($event)">
@@ -48,6 +48,7 @@
         <script src="src/app.js"></script>
         <script src="src/toolbar/ToolbarCtrl.js"></script>
         <script src="src/sidenav/SidenavCtrl.js"></script>
+        <script src="src/home/HomeCtrl.js"></script>
         <script src="src/message/MessageCtrl.js"></script>
         <script src="src/bottom-sheet/BottomSheetCtrl.js"></script>
         <script src="src/avatar/AvatarService.js"></script>

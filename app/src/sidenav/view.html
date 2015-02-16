@@ -5,11 +5,11 @@
             <input ng-model="searchedFriend">
         </md-input-container>
     </md-item>
-    <md-item ng-repeat="it in avatars | filter:{name:searchedFriend}">
+    <md-item ng-repeat="u in users | filter:{name:searchedFriend}" ng-if="u.avatar !== user.avatar">
         <md-item-content>
-            <md-button ng-click="selectAvatar(it)" ng-class="{'selected' : it === selected }">
-                <span class="{{it.classname}} avatar"></span>
-                {{it.name}}
+            <md-button ng-click="selectUser(u)" ng-class="{selected:isSelected(u)}">
+                <span class="{{u.avatar}} avatar"></span>
+                {{u.name}}
             </md-button>
         </md-item-content>
     </md-item>

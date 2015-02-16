@@ -7,11 +7,11 @@ angular.module('app', [
 
     $mdThemingProvider.theme('default').primaryPalette('blue').accentPalette('purple');
 
-    $urlRouterProvider.otherwise('/home');
+    $urlRouterProvider.otherwise('/');
 
     $stateProvider
-        .state('home', {
-            url: '/home',
+        .state('main', {
+            url: '/',
             views: {
                 toolbar: {
                     templateUrl: 'src/toolbar/view.html',
@@ -22,6 +22,15 @@ angular.module('app', [
                     controller: 'SidenavCtrl'
                 },
                 content: {
+                    templateUrl: 'src/home/view.html',
+                    controller: 'HomeCtrl'
+                }
+            }
+        }).state('message', {
+            url: 'message/:avatar',
+            parent: 'main',
+            views: {
+                'content@': {
                     templateUrl: 'src/message/view.html',
                     controller: 'MessageCtrl'
                 }
@@ -36,6 +45,11 @@ angular.module('app', [
             controller: 'BottomSheetCtrl',
             targetEvent: $event
         });
+    };
+
+    $rootScope.user = {
+        avatar : 'svg-3',
+        who: 'Gener Delosreyes'
     };
 
 });
