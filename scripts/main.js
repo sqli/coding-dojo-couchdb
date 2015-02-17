@@ -1,9 +1,11 @@
 angular.module('app', [
     'ngMaterial',
     'ui.router',
-    'avatars',
-    'messages'
-]).config(function($mdThemingProvider, $stateProvider, $urlRouterProvider) {
+    'app.resource.message',
+    'avatars'
+]).config(function($mdThemingProvider, $stateProvider, $urlRouterProvider, $remoteMessageServiceProvider) {
+
+    $remoteMessageServiceProvider.uri = 'http://coding-dojo-couchdb.iriscouch.com/message';
 
     $mdThemingProvider.theme('default').primaryPalette('blue').accentPalette('purple');
 
@@ -22,7 +24,7 @@ angular.module('app', [
                     controller: 'SidenavCtrl'
                 },
                 content: {
-                    templateUrl: 'src/home/view.html',
+                    templateUrl: 'src/message/view.html',
                     controller: 'HomeCtrl'
                 }
             }
@@ -37,7 +39,7 @@ angular.module('app', [
             }
         });
 
-}).run(function($rootScope, $mdBottomSheet){
+}).run(function($rootScope, $mdBottomSheet, AvatarService){
 
     $rootScope.showActions   = function showActions($event) {
         $mdBottomSheet.show({
@@ -47,9 +49,61 @@ angular.module('app', [
         });
     };
 
-    $rootScope.user = {
-        avatar : 'svg-3',
-        who: 'Gener Delosreyes'
+    AvatarService.auth().then(function(user){
+        $rootScope.user = user;
+    });
+
+});
+angular.module('app.resource.message', []).provider('$remoteMessageService', function(){
+
+    this.uri = 'http://xxxxxxxxxxxxxxx/api/message';
+
+    this.$get = function($q){
+
+        var db = new PouchDB(this.uri);
+
+        var query = function(){
+            var deferred = $q.defer();
+            db.allDocs({include_docs: true, descending: true}, function(err, doc) {
+                if(err){
+                    deferred.reject(err);
+                }else{
+                    deferred.resolve(doc.rows.map(function(row){
+                        return row.doc;
+                    }));
+                }
+            });
+            return deferred.promise;
+        };
+        var get = function(){
+            throw 'Not implemented';
+        };
+        var save = function(message){
+            var deferred = $q.defer();
+            db.post(message, function (err, response) {
+                if(err){
+                    deferred.reject(err);
+                }else{
+                    angular.extend(message, response);
+                    deferred.resolve(message);
+                }
+            });
+            return deferred.promise;
+        };
+        var update = function(){
+            throw 'Not implemented';
+        };
+        var remove = function(){
+            throw 'Not implemented';
+        };
+
+        return {
+            query: query,
+            get: get,
+            save: save,
+            update: update,
+            remove: remove
+        }
     };
 
 });
@@ -84,11 +138,14 @@ angular.module('app').controller('SidenavCtrl', function ($scope, $state, $state
     };
 
 });
-angular.module('app').controller('HomeCtrl', function () {
+angular.module('app').controller('HomeCtrl', function ($scope, $remoteMessageService) {
 
+    $remoteMessageService.query().then(function(messages){
+        $scope.messages = messages;
+    });
 
 });
-angular.module('app').controller('MessageCtrl', function ($rootScope, $scope, MessageService, $timeout, $stateParams, $location, $anchorScroll) {
+angular.module('app').controller('MessageCtrl', function ($rootScope, $scope, $remoteMessageService, $timeout, $stateParams, $location, $anchorScroll) {
 
     var scrollToWhat = function(){
         $timeout(function(){
@@ -98,21 +155,25 @@ angular.module('app').controller('MessageCtrl', function ($rootScope, $scope, Me
     };
 
     $scope.message = {
-        avatar: $rootScope.user.avatar,
+        from: $rootScope.user.avatar,
+        to: $stateParams.avatar,
         who: $rootScope.user.who,
+        when: (new Date()).getTime(),
         what: ''
     };
 
-    MessageService.loadAll().then(function(messages){
+    $remoteMessageService.query().then(function(messages){
         $scope.messages = messages;
         scrollToWhat();
     });
 
     $scope.createMessage = function(){
         $scope.message.when = (new Date()).getTime();
-        $scope.messages.push(angular.copy($scope.message));
+        $remoteMessageService.save(angular.copy($scope.message)).then(function(message){
+            $scope.messages.push(message);
+            scrollToWhat();
+        });
         $scope.message.what = '';
-        scrollToWhat();
     };
 
 });
@@ -141,138 +202,38 @@ angular.module('app').controller('BottomSheetCtrl', function($scope, $mdBottomSh
 angular.module('avatars', []).service('AvatarService', function ($q){
     var avatars = [
         {
-            name: 'Lia Lugo',
+            who: 'Lia Lugo',
             avatar: 'svg-1'
         },
         {
-            name: 'George Duke',
+            who: 'George Duke',
             avatar: 'svg-2'
         },
         {
-            name: 'Gener Delosreyes',
+            who: 'Gener Delosreyes',
             avatar: 'svg-3'
         },
         {
-            name: 'Lawrence Ray',
+            who: 'Lawrence Ray',
             avatar: 'svg-4'
         },
         {
-            name: 'Ernesto Urbina',
+            who: 'Ernesto Urbina',
             avatar: 'svg-5'
         },
         {
-            name: 'Gani Ferrer',
+            who: 'Gani Ferrer',
             avatar: 'svg-6'
         }
     ];
 
     // Promise-based API
     return {
+        auth: function(){
+            return $q.when(avatars[Math.floor(Math.random()*avatars.length)]);
+        },
         loadAll : function() {
             return $q.when(avatars);
-        }
-    };
-});
-'use strict';
-
-angular.module('messages', []).service('MessageService', function ($q){
-    var messages = [
-        {
-            avatar: 'svg-1',
-            who: 'Lia Lugo',
-            when: 1410126352000,
-            what: " I'll be in your neighborhood doing errands"
-        },
-        {
-            avatar: 'svg-4',
-            who: 'Lawrence Ray',
-            when: 1411126352000,
-            what: " I'll be in your neighborhood doing errands"
-        },
-        {
-            avatar: 'svg-4',
-            who: 'Lawrence Ray',
-            when: 1412126352000,
-            what: " I'll be in your neighborhood doing errands"
-        },
-        {
-            avatar: 'svg-1',
-            who: 'Lia Lugo',
-            when: 1413126352000,
-            what: " I'll be in your neighborhood doing errands"
-        },
-        {
-            avatar: 'svg-4',
-            who: 'Lawrence Ray',
-            when: 1414126352000,
-            what: " I'll be in your neighborhood doing errands"
-        },
-        {
-            avatar: 'svg-4',
-            who: 'Lawrence Ray',
-            when: 1415126352000,
-            what: " I'll be in your neighborhood doing errands"
-        },
-        {
-            avatar: 'svg-1',
-            who: 'Lia Lugo',
-            when: 1416126352000,
-            what: " I'll be in your neighborhood doing errands"
-        },
-        {
-            avatar: 'svg-4',
-            who: 'Lawrence Ray',
-            when: 1417126352000,
-            what: " I'll be in your neighborhood doing errands"
-        },
-        {
-            avatar: 'svg-1',
-            who: 'Lia Lugo',
-            when: 1418126352000,
-            what: " I'll be in your neighborhood doing errands"
-        },
-        {
-            avatar: 'svg-1',
-            who: 'Lia Lugo',
-            when: 1419126352000,
-            what: " I'll be in your neighborhood doing errands"
-        },
-        {
-            avatar: 'svg-4',
-            who: 'Lawrence Ray',
-            when: 1420126352000,
-            what: " I'll be in your neighborhood doing errands"
-        },
-        {
-            avatar: 'svg-4',
-            who: 'Lawrence Ray',
-            when: 1421126352000,
-            what: " I'll be in your neighborhood doing errands"
-        },
-        {
-            avatar: 'svg-1',
-            who: 'Lia Lugo',
-            when: 1422126352000,
-            what: " I'll be in your neighborhood doing errands"
-        },
-        {
-            avatar: 'svg-1',
-            who: 'Lia Lugo',
-            when: 1423126352000,
-            what: " I'll be in your neighborhood doing errands"
-        },
-        {
-            avatar: 'svg-4',
-            who: 'Lawrence Ray',
-            when: 1424126352000,
-            what: " I'll be in your neighborhood doing errands"
-        }
-    ];
-
-    // Promise-based API
-    return {
-        loadAll : function() {
-            return $q.when(messages);
         }
     };
 });

@@ -32,7 +32,7 @@ md-list .md-button.selected {
   border-radius: 50%;
   display: inline-block;
   overflow: hidden;
-  zoom: 0.7;
+  zoom: 0.70;
   transform: translateZ(0);
   -webkit-transform: scale(0.7);
   -moz-transform: scale(0.7); }
