@@ -1,10 +1,10 @@
 <section>
     <md-list layout="column">
         <md-subheader class="md-warn">Last year</md-subheader>
-        <md-item ng-repeat="message in messages">
+        <md-item ng-repeat="message in messages | orderBy:'when'">
             <md-item-content>
                 <div class="md-tile-left">
-                    <span class="{{message.avatar}} avatar" role="img" aria-label="{{selected.name}}"></span>
+                    <span class="{{message.from}} avatar" role="img" aria-label="{{selected.name}}"></span>
                 </div>
                 <div class="md-tile-content">
                     <h3>{{message.who}}</h3>
@@ -16,7 +16,7 @@
     </md-list>
 </section>
 
-<section layout="column">
+<section layout="column" ng-if="message.to">
     <md-progress-linear class="md-accent" md-mode="indeterminate"></md-progress-linear>
     <form id="what" layout="row" ng-submit="createMessage()" class="md-whiteframe-z1 md-primary">
         <span class="{{user.avatar}} avatar" role="img" aria-label="{{user.who}}"></span>

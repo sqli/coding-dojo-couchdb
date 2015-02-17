@@ -1,4 +1,4 @@
-angular.module('app').controller('MessageCtrl', function ($rootScope, $scope, MessageService, $timeout, $stateParams, $location, $anchorScroll) {
+angular.module('app').controller('MessageCtrl', function ($rootScope, $scope, $remoteMessageService, $timeout, $stateParams, $location, $anchorScroll) {
 
     var scrollToWhat = function(){
         $timeout(function(){
@@ -8,21 +8,25 @@ angular.module('app').controller('MessageCtrl', function ($rootScope, $scope, Me
     };
 
     $scope.message = {
-        avatar: $rootScope.user.avatar,
+        from: $rootScope.user.avatar,
+        to: $stateParams.avatar,
         who: $rootScope.user.who,
+        when: (new Date()).getTime(),
         what: ''
     };
 
-    MessageService.loadAll().then(function(messages){
+    $remoteMessageService.query().then(function(messages){
         $scope.messages = messages;
         scrollToWhat();
     });
 
     $scope.createMessage = function(){
         $scope.message.when = (new Date()).getTime();
-        $scope.messages.push(angular.copy($scope.message));
+        $remoteMessageService.save(angular.copy($scope.message)).then(function(message){
+            $scope.messages.push(message);
+            scrollToWhat();
+        });
         $scope.message.what = '';
-        scrollToWhat();
     };
 
 });

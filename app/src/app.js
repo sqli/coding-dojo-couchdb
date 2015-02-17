@@ -1,9 +1,11 @@
 angular.module('app', [
     'ngMaterial',
     'ui.router',
-    'avatars',
-    'messages'
-]).config(function($mdThemingProvider, $stateProvider, $urlRouterProvider) {
+    'app.resource.message',
+    'avatars'
+]).config(function($mdThemingProvider, $stateProvider, $urlRouterProvider, $remoteMessageServiceProvider) {
+
+    $remoteMessageServiceProvider.uri = 'http://coding-dojo-couchdb.iriscouch.com/message';
 
     $mdThemingProvider.theme('default').primaryPalette('blue').accentPalette('purple');
 
@@ -22,7 +24,7 @@ angular.module('app', [
                     controller: 'SidenavCtrl'
                 },
                 content: {
-                    templateUrl: 'src/home/view.html',
+                    templateUrl: 'src/message/view.html',
                     controller: 'HomeCtrl'
                 }
             }
@@ -37,7 +39,7 @@ angular.module('app', [
             }
         });
 
-}).run(function($rootScope, $mdBottomSheet){
+}).run(function($rootScope, $mdBottomSheet, AvatarService){
 
     $rootScope.showActions   = function showActions($event) {
         $mdBottomSheet.show({
@@ -47,9 +49,8 @@ angular.module('app', [
         });
     };
 
-    $rootScope.user = {
-        avatar : 'svg-3',
-        who: 'Gener Delosreyes'
-    };
+    AvatarService.auth().then(function(user){
+        $rootScope.user = user;
+    });
 
 });
