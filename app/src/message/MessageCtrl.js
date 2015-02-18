@@ -15,7 +15,24 @@ angular.module('app').controller('MessageCtrl', function ($rootScope, $scope, $r
         what: ''
     };
 
-    $remoteMessageService.query().then(function(messages){
+    /**
+    function(doc, _emit) {
+        var _me = 'svg-1';
+        var _with = 'svg-2';
+        if(doc.from === _me && doc.to === _with || doc.from === _with && doc.to === _me){
+            emit(doc._id, doc);
+        }
+    }*/
+
+    var communicationKeys = [$rootScope.user.avatar, $stateParams.avatar].sort();
+
+    $remoteMessageService.query(function(doc) {
+        var communicationKeys = [doc.from, doc.to].sort();
+        emit(communicationKeys, doc);
+    }, {
+        startkey: communicationKeys,
+        endkey:communicationKeys
+    }).then(function(messages){
         $scope.messages = messages;
         scrollToWhat();
     });

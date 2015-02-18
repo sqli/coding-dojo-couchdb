@@ -6,7 +6,7 @@ angular.module('app.resource.message', []).provider('$remoteMessageService', fun
 
         var db = new PouchDB(this.uri);
 
-        var query = function(){
+        var findAll = function(){
             var deferred = $q.defer();
             db.allDocs({include_docs: true, descending: true}, function(err, doc) {
                 if(err){
@@ -15,6 +15,27 @@ angular.module('app.resource.message', []).provider('$remoteMessageService', fun
                     deferred.resolve(doc.rows.map(function(row){
                         return row.doc;
                     }));
+                }
+            });
+            return deferred.promise;
+        };
+        var query = function(fn, options){
+            options = options || {};
+            if(fn.reduce){
+                options.group = true;
+            }
+            var deferred = $q.defer();
+            db.query(fn, options, function(err, doc) {
+                if(err){
+                    deferred.reject(err);
+                }else{
+                    if(fn.reduce){
+                        deferred.resolve(doc.rows);
+                    }else{
+                        deferred.resolve(doc.rows.map(function(row){
+                            return row.value;
+                        }));
+                    }
                 }
             });
             return deferred.promise;
@@ -42,6 +63,7 @@ angular.module('app.resource.message', []).provider('$remoteMessageService', fun
         };
 
         return {
+            findAll: findAll,
             query: query,
             get: get,
             save: save,
