@@ -1,6 +1,6 @@
-angular.module('app').controller('HomeCtrl', function ($scope, $remoteMessageService) {
+angular.module('app').controller('HomeCtrl', function ($scope, Message) {
 
-    $remoteMessageService.findAll().then(function(messages){
+    Message.findAll().then(function(messages){
         $scope.messages = messages;
     });
 

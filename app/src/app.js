@@ -1,11 +1,11 @@
 angular.module('app', [
     'ngMaterial',
     'ui.router',
-    'app.resource.message',
+    'app.resource.message.couchdb', // couchdb|stub|tp
     'avatars'
-]).config(function($mdThemingProvider, $stateProvider, $urlRouterProvider, $remoteMessageServiceProvider) {
+]).config(function($mdThemingProvider, $stateProvider, $urlRouterProvider, MessageProvider) {
 
-    $remoteMessageServiceProvider.uri = 'http://coding-dojo-couchdb.iriscouch.com/message';
+    MessageProvider.uri = 'http://coding-dojo-couchdb.iriscouch.com/message';
 
     $mdThemingProvider.theme('default').primaryPalette('blue').accentPalette('purple');
 

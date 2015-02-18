@@ -1,4 +1,4 @@
-angular.module('app').controller('SidenavCtrl', function ($scope, $state, $stateParams, $mdSidenav, $remoteMessageService) {
+angular.module('app').controller('SidenavCtrl', function ($scope, $state, $stateParams, $mdSidenav, Message) {
 
     $scope.toggleSidenav = function toggleSideNav( name ) {
         $mdSidenav(name).toggle();
@@ -7,19 +7,7 @@ angular.module('app').controller('SidenavCtrl', function ($scope, $state, $state
     $scope.searchedFriend = '';
     $scope.selected = null;
 
-    $remoteMessageService.query({
-        map: function(doc) {
-            emit(doc.from, doc.who);
-            emit(doc.to);
-        },
-        reduce: function(key, value){
-            for(var i = 0; i < value.length; i++){
-                if(value[i]){
-                    return value[i]
-                }
-            }
-        }
-    }).then(function(users){
+    Message.findAllCommunicators().then(function(users){
         $scope.users = users;
     });
 
