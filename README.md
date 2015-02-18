@@ -23,7 +23,7 @@ to [MessageServiceTp.js](https://github.com/sqli/coding-dojo-couchdb/tree/master
 thanks to a JavaScript [CouchDB](http://couchdb.apache.org/) API : [PouchDB](http://pouchdb.com/)
 
 ### Step 1 : Import Libraries
--[Pouchdb documentation : setup pouchdb](http://pouchdb.com/guides/setup-pouchdb.html)
+- Pouchdb documentation : [setup pouchdb](http://pouchdb.com/guides/setup-pouchdb.html)
 - Change the implementation (couchdb -> tp) : [app.js](https://github.com/sqli/coding-dojo-couchdb/tree/master/app/src/app.js)
 
     angular.module('app', [
@@ -34,24 +34,24 @@ thanks to a JavaScript [CouchDB](http://couchdb.apache.org/) API : [PouchDB](htt
     ])
 
 ### Step 2 : Database Initialization
--[Pouchdb documentation : create database](http://pouchdb.com/api.html#create_database)
--[AngularJS documentation : deal with promise](https://docs.angularjs.org/api/ng/service/$q)
+- Pouchdb documentation : [create database](http://pouchdb.com/api.html#create_database)
+- AngularJS documentation : [deal with promise](https://docs.angularjs.org/api/ng/service/$q)
 
 ### Step 3: Database conception
--[Denormalization](https://highlyscalable.wordpress.com/2012/03/01/nosql-data-modeling-techniques/)
+- NOSQL documentation : [Denormalization](https://highlyscalable.wordpress.com/2012/03/01/nosql-data-modeling-techniques/)
 
 ### Step 4: Find all messages
--[Pouchdb documentation : batch fetch](http://pouchdb.com/api.html#batch_fetch)
+- Pouchdb documentation : [batch fetch](http://pouchdb.com/api.html#batch_fetch)
 
 ### Step 5: Find all communicators
--[CouchDB futon : map reduce query](http://coding-dojo-couchdb.iriscouch.com/_utils/database.html?message/_temp_view)
--[Pouchdb documentation : query database](http://pouchdb.com/api.html#query_database)
+- CouchDB futon : [map reduce query](http://coding-dojo-couchdb.iriscouch.com/_utils/database.html?message/_temp_view)
+- Pouchdb documentation : [query database](http://pouchdb.com/api.html#query_database)
 
 ### Step 6: Save message
--[Pouchdb documentation : create document](http://pouchdb.com/api.html#create_document)
+- Pouchdb documentation : [create document](http://pouchdb.com/api.html#create_document)
 
 ### Step 7: Find all by communication
--[Pouchdb documentation : query options](http://pouchdb.com/api.html#query_database)
+- Pouchdb documentation : [query options](http://pouchdb.com/api.html#query_database)
 
 ## Result
 [MessageService.js](https://github.com/sqli/coding-dojo-couchdb/tree/master/app/src/resource/MessageService.js)
