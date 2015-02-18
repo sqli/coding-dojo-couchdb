@@ -1,11 +1,11 @@
 angular.module('app', [
     'ngMaterial',
     'ui.router',
-    'app.resource.message',
+    'app.resource.message.couchdb', // couchdb|stub|tp
     'avatars'
-]).config(function($mdThemingProvider, $stateProvider, $urlRouterProvider, $remoteMessageServiceProvider) {
+]).config(function($mdThemingProvider, $stateProvider, $urlRouterProvider, MessageProvider) {
 
-    $remoteMessageServiceProvider.uri = 'http://coding-dojo-couchdb.iriscouch.com/message';
+    MessageProvider.uri = 'http://coding-dojo-couchdb.iriscouch.com/message';
 
     $mdThemingProvider.theme('default').primaryPalette('blue').accentPalette('purple');
 
@@ -54,15 +54,15 @@ angular.module('app', [
     });
 
 });
-angular.module('app.resource.message', []).provider('$remoteMessageService', function(){
+angular.module('app.resource.message.couchdb', []).provider('Message', function(){
 
-    this.uri = 'http://xxxxxxxxxxxxxxx/api/message';
+    this.uri = 'http://coding-dojo-couchdb.iriscouch.com/message';
 
     this.$get = function($q){
 
         var db = new PouchDB(this.uri);
 
-        var query = function(){
+        var findAll = function(){
             var deferred = $q.defer();
             db.allDocs({include_docs: true, descending: true}, function(err, doc) {
                 if(err){
@@ -75,9 +75,7 @@ angular.module('app.resource.message', []).provider('$remoteMessageService', fun
             });
             return deferred.promise;
         };
-        var get = function(){
-            throw 'Not implemented';
-        };
+
         var save = function(message){
             var deferred = $q.defer();
             db.post(message, function (err, response) {
@@ -90,19 +88,129 @@ angular.module('app.resource.message', []).provider('$remoteMessageService', fun
             });
             return deferred.promise;
         };
-        var update = function(){
-            throw 'Not implemented';
+
+        var findAllByCommunication = function(communicators){
+            var deferred = $q.defer();
+            db.query(function(doc) {
+                var communicationKeys = [doc.from, doc.to].sort();
+                emit(communicationKeys, doc);
+            }, {
+                startkey: communicators.sort(),
+                endkey:communicators.sort()
+            }, function(err, doc) {
+                if(err){
+                    deferred.reject(err);
+                }else{
+                    deferred.resolve(doc.rows.map(function(row){
+                        return row.value;
+                    }));
+                }
+            });
+            return deferred.promise;
         };
-        var remove = function(){
-            throw 'Not implemented';
+
+        var findAllCommunicators = function(){
+            var deferred = $q.defer();
+            db.query({
+                map: function(doc) {
+                    emit(doc.from, doc.who);
+                    emit(doc.to);
+                },
+                reduce: function(key, value){
+                    for(var i = 0; i < value.length; i++){
+                        if(value[i]){
+                            return value[i]
+                        }
+                    }
+                }
+            }, {
+                group : true
+            }, function(err, doc) {
+                if(err){
+                    deferred.reject(err);
+                }else{
+                    deferred.resolve(doc.rows);
+                }
+            });
+            return deferred.promise;
         };
 
         return {
-            query: query,
-            get: get,
+            findAll: findAll,
             save: save,
-            update: update,
-            remove: remove
+            findAllByCommunication: findAllByCommunication,
+            findAllCommunicators: findAllCommunicators
+        }
+    };
+
+});
+angular.module('app.resource.message.stub', [
+    'ngResource'
+]).factory('Message', function($q, $resource){
+
+    var findAll = function(){
+        return $resource('src/resource/stub/GET-message.json').query().$promise;
+    };
+
+    var save = function(message){
+        return $q.when(message);
+    };
+
+    var findAllByCommunication = function(communicators){
+        return $resource('src/resource/stub/GET-message-by-communication.json').query().$promise;
+    };
+
+    var findAllCommunicators = function(){
+        return $resource('src/resource/stub/GET-communicators.json').query().$promise;
+    };
+
+    return {
+        findAll: findAll,
+        save: save,
+        findAllByCommunication: findAllByCommunication,
+        findAllCommunicators: findAllCommunicators
+    }
+
+});
+angular.module('app.resource.message.tp', []).provider('Message', function(){
+
+    this.uri = 'http://coding-dojo-couchdb.iriscouch.com/message';
+
+    this.$get = function($q){
+
+        var findAll = function(){
+            var deferred = $q.defer();
+            //deferred.resolve();
+            //deferred.reject();
+            return deferred.promise;
+        };
+
+        var save = function(message){
+            var deferred = $q.defer();
+            //deferred.resolve();
+            //deferred.reject();
+            return deferred.promise;
+        };
+
+        var findAllByCommunication = function(communicators){
+            var deferred = $q.defer();
+            //deferred.resolve();
+            //deferred.reject();
+            return deferred.promise;
+        };
+
+        var findAllCommunicators = function(){
+            var deferred = $q.defer();
+            //deferred.resolve();
+            //deferred.reject();
+            return deferred.promise;
+        };
+
+        return {
+            findAll: findAll,
+            save: save,
+            findAllByCommunication: findAllByCommunication,
+            findAllCommunicators: findAllCommunicators
         }
     };
 
@@ -114,7 +222,7 @@ angular.module('app').controller('ToolbarCtrl', function ($scope, $mdSidenav) {
     };
 
 });
-angular.module('app').controller('SidenavCtrl', function ($scope, $state, $stateParams, $mdSidenav, AvatarService) {
+angular.module('app').controller('SidenavCtrl', function ($scope, $state, $stateParams, $mdSidenav, Message) {
 
     $scope.toggleSidenav = function toggleSideNav( name ) {
         $mdSidenav(name).toggle();
@@ -123,29 +231,29 @@ angular.module('app').controller('SidenavCtrl', function ($scope, $state, $state
     $scope.searchedFriend = '';
     $scope.selected = null;
 
-    AvatarService.loadAll().then(function(users) {
+    Message.findAllCommunicators().then(function(users){
         $scope.users = users;
     });
 
     $scope.selectUser = function (user) {
-        $stateParams.avatar = user.avatar;
+        $stateParams.avatar = user.key;
         $state.go('message', $stateParams);
         $scope.toggleSidenav('left');
     };
 
     $scope.isSelected = function(user){
-        return user.avatar === $stateParams.avatar;
+        return user.key === $stateParams.avatar;
     };
 
 });
-angular.module('app').controller('HomeCtrl', function ($scope, $remoteMessageService) {
+angular.module('app').controller('HomeCtrl', function ($scope, Message) {
 
-    $remoteMessageService.query().then(function(messages){
+    Message.findAll().then(function(messages){
         $scope.messages = messages;
     });
 
 });
-angular.module('app').controller('MessageCtrl', function ($rootScope, $scope, $remoteMessageService, $timeout, $stateParams, $location, $anchorScroll) {
+angular.module('app').controller('MessageCtrl', function ($rootScope, $scope, Message, $timeout, $stateParams, $location, $anchorScroll) {
 
     var scrollToWhat = function(){
         $timeout(function(){
@@ -162,14 +270,14 @@ angular.module('app').controller('MessageCtrl', function ($rootScope, $scope, $r
         what: ''
     };
 
-    $remoteMessageService.query().then(function(messages){
+    Message.findAllByCommunication([$rootScope.user.avatar, $stateParams.avatar]).then(function(messages){
         $scope.messages = messages;
         scrollToWhat();
     });
 
     $scope.createMessage = function(){
         $scope.message.when = (new Date()).getTime();
-        $remoteMessageService.save(angular.copy($scope.message)).then(function(message){
+        Message.save(angular.copy($scope.message)).then(function(message){
             $scope.messages.push(message);
             scrollToWhat();
         });
