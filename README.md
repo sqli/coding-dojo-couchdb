@@ -27,10 +27,10 @@ thanks to a JavaScript [CouchDB](http://couchdb.apache.org/) API : [PouchDB](htt
 - Change the implementation (couchdb -> tp) : [app.js](https://github.com/sqli/coding-dojo-couchdb/tree/master/app/src/app.js)
 
     angular.module('app', [
-        'ngMaterial',
-        'ui.router',
-        'app.resource.message.couchdb', // couchdb|stub|tp
-        'avatars'
+    'ngMaterial',
+    'ui.router',
+    'app.resource.message.couchdb', // couchdb|stub|tp
+    'avatars'
     ])
 
 ### Step 2 : Database Initialization
