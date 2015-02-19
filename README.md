@@ -26,12 +26,7 @@ thanks to a JavaScript [CouchDB](http://couchdb.apache.org/) API : [PouchDB](htt
 - Pouchdb documentation : [setup pouchdb](http://pouchdb.com/guides/setup-pouchdb.html)
 - Change the implementation (couchdb -> tp) : [app.js](https://github.com/sqli/coding-dojo-couchdb/tree/master/app/src/app.js)
 
-    angular.module('app', [
-    'ngMaterial',
-    'ui.router',
-    'app.resource.message.couchdb', // couchdb|stub|tp
-    'avatars'
-    ])
+    'app.resource.message.couchdb' -> 'app.resource.message.tp'
 
 ### Step 2 : Database Initialization
 - Pouchdb documentation : [create database](http://pouchdb.com/api.html#create_database)
