@@ -3,9 +3,9 @@
 </section>
 
 <section ng-if="loaded">
-    <md-list layout="column">
-        <md-subheader class="md-warn">Last year</md-subheader>
-        <md-item ng-repeat="message in messages | orderBy:'when'">
+    <md-list layout="column" ng-repeat="messagesMap in messages track by $index" ng-if="messagesMap.messages.length > 0">
+        <md-subheader ng-class="messagesMap.className">{{messagesMap.label}}</md-subheader>
+        <md-item ng-repeat="message in messagesMap.messages track by $index | orderBy:'when'">
             <md-item-content>
                 <div class="md-tile-left">
                     <span class="{{message.from}} avatar" role="img" aria-label="{{selected.name}}"></span>

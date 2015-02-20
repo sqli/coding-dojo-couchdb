@@ -1,4 +1,4 @@
-angular.module('app').controller('MessageCtrl', function ($rootScope, $scope, Message, $timeout, $stateParams, $location, $anchorScroll) {
+angular.module('app').controller('MessageCtrl', function ($rootScope, $scope, Message, MessageUtilService, $timeout, $stateParams, $location, $anchorScroll) {
 
     var scrollToWhat = function(){
         $timeout(function(){
@@ -16,7 +16,7 @@ angular.module('app').controller('MessageCtrl', function ($rootScope, $scope, Me
     };
 
     Message.findAllByCommunication([$rootScope.user.avatar, $stateParams.avatar]).then(function(messages){
-        $scope.messages = messages;
+        $scope.messages = MessageUtilService.splitByPeriods(messages).reverse();
         $scope.loaded = true;
         scrollToWhat();
     });
@@ -25,7 +25,8 @@ angular.module('app').controller('MessageCtrl', function ($rootScope, $scope, Me
         $scope.waiting = true;
         $scope.message.when = (new Date()).getTime();
         Message.save(angular.copy($scope.message)).then(function(message){
-            $scope.messages.push(message);
+            var todayIndex = $scope.messages.length -1;
+            $scope.messages[todayIndex].messages.push(message);
             $scope.waiting = false;
             scrollToWhat();
         });
