@@ -6,8 +6,10 @@ angular.module('app.resource.message.couchdb', []).provider('Message', function(
      */
     this.config = {
         uri : null,
-        login : null,
-        password : null
+        auth: {
+            username : null,
+            password : null
+        }
     };
 
     /**
@@ -17,21 +19,7 @@ angular.module('app.resource.message.couchdb', []).provider('Message', function(
      */
     this.$get = function($q){
 
-        var config = this.config;
-
-        var db = new PouchDB(config.uri);
-
-        var connect = function(){
-            var deferred = $q.defer();
-            db.login(config.login, config.password,function (err) {
-                if(err){
-                    deferred.reject(err);
-                }else{
-                    deferred.resolve();
-                }
-            });
-            return deferred.promise;
-        };
+        var db = new PouchDB(this.config.database, {auth: this.config.auth});
 
         var findAll = function(){
             var deferred = $q.defer();
@@ -111,7 +99,6 @@ angular.module('app.resource.message.couchdb', []).provider('Message', function(
          * Public service API
          */
         return {
-            connect: connect,
             findAll: findAll,
             save: save,
             findAllByCommunication: findAllByCommunication,

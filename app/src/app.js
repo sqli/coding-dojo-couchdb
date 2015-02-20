@@ -5,9 +5,9 @@ angular.module('app', [
     'avatars'
 ]).config(function($mdThemingProvider, $stateProvider, $urlRouterProvider, MessageProvider) {
 
-    MessageProvider.config.uri = 'http://coding-dojo-couchdb.iriscouch.com/message';
-    MessageProvider.config.login = 'coding-dojo-couchdb';
-    MessageProvider.config.password = 'P@$$w0rd';
+    MessageProvider.config.database = 'http://coding-dojo-couchdb.iriscouch.com/message';
+    MessageProvider.config.auth.username = 'coding-dojo-couchdb';
+    MessageProvider.config.auth.password = 'P@$$w0rd';
 
     $mdThemingProvider.theme('default').primaryPalette('blue').accentPalette('purple');
 
@@ -16,11 +16,6 @@ angular.module('app', [
     $stateProvider
         .state('main', {
             url: '/',
-            resolve: {
-                connection: function(Message){
-                    return Message.connect();
-                }
-            },
             views: {
                 toolbar: {
                     templateUrl: 'src/toolbar/view.html',

@@ -1,6 +1,12 @@
 angular.module('app.resource.message.tp', []).provider('Message', function(){
 
-    this.uri = 'http://coding-dojo-couchdb.iriscouch.com/message';
+    this.config = {
+        uri : null,
+        auth: {
+            username : null,
+            password : null
+        }
+    };
 
     this.$get = function($q){
 
