@@ -5,7 +5,9 @@ angular.module('app', [
     'avatars'
 ]).config(function($mdThemingProvider, $stateProvider, $urlRouterProvider, MessageProvider) {
 
-    MessageProvider.uri = 'http://coding-dojo-couchdb.iriscouch.com/message';
+    MessageProvider.config.database = 'http://coding-dojo-couchdb.iriscouch.com/message';
+    MessageProvider.config.auth.username = 'coding-dojo-couchdb';
+    MessageProvider.config.auth.password = 'P@$$w0rd';
 
     $mdThemingProvider.theme('default').primaryPalette('blue').accentPalette('purple');
 
@@ -56,11 +58,26 @@ angular.module('app', [
 });
 angular.module('app.resource.message.couchdb', []).provider('Message', function(){
 
-    this.uri = 'http://coding-dojo-couchdb.iriscouch.com/message';
+    /**
+     * Define configuration into angular config phase (app.js)
+     * @type {{uri: null, login: null, password: null}}
+     */
+    this.config = {
+        uri : null,
+        auth: {
+            username : null,
+            password : null
+        }
+    };
 
+    /**
+     * Service definition
+     * @param $q
+     * @returns {{connect: connect, findAll: findAll, save: save, findAllByCommunication: findAllByCommunication, findAllCommunicators: findAllCommunicators}}
+     */
     this.$get = function($q){
 
-        var db = new PouchDB(this.uri);
+        var db = new PouchDB(this.config.database, {auth: this.config.auth});
 
         var findAll = function(){
             var deferred = $q.defer();
@@ -82,6 +99,7 @@ angular.module('app.resource.message.couchdb', []).provider('Message', function(
                 if(err){
                     deferred.reject(err);
                 }else{
+                    // Decorate the nude object with CouchDB attributes : _id, _rev...
                     angular.extend(message, response);
                     deferred.resolve(message);
                 }
@@ -135,6 +153,9 @@ angular.module('app.resource.message.couchdb', []).provider('Message', function(
             return deferred.promise;
         };
 
+        /**
+         * Public service API
+         */
         return {
             findAll: findAll,
             save: save,
@@ -146,35 +167,52 @@ angular.module('app.resource.message.couchdb', []).provider('Message', function(
 });
 angular.module('app.resource.message.stub', [
     'ngResource'
-]).factory('Message', function($q, $resource){
+]).provider('Message', function(){
 
-    var findAll = function(){
-        return $resource('src/resource/stub/GET-message.json').query().$promise;
+    this.config = {
+        uri : null,
+        auth: {
+            username : null,
+            password : null
+        }
     };
 
-    var save = function(message){
-        return $q.when(message);
-    };
+    this.$get = function($q, $resource){
 
-    var findAllByCommunication = function(communicators){
-        return $resource('src/resource/stub/GET-message-by-communication.json').query().$promise;
-    };
+        var findAll = function(){
+            return $resource('src/resource/stub/GET-message.json').query().$promise;
+        };
 
-    var findAllCommunicators = function(){
-        return $resource('src/resource/stub/GET-communicators.json').query().$promise;
-    };
+        var save = function(message){
+            return $q.when(message);
+        };
 
-    return {
-        findAll: findAll,
-        save: save,
-        findAllByCommunication: findAllByCommunication,
-        findAllCommunicators: findAllCommunicators
-    }
+        var findAllByCommunication = function(communicators){
+            return $resource('src/resource/stub/GET-message-by-communication.json').query().$promise;
+        };
+
+        var findAllCommunicators = function(){
+            return $resource('src/resource/stub/GET-communicators.json').query().$promise;
+        };
+
+        return {
+            findAll: findAll,
+            save: save,
+            findAllByCommunication: findAllByCommunication,
+            findAllCommunicators: findAllCommunicators
+        }
+    };
 
 });
 angular.module('app.resource.message.tp', []).provider('Message', function(){
 
-    this.uri = 'http://coding-dojo-couchdb.iriscouch.com/message';
+    this.config = {
+        uri : null,
+        auth: {
+            username : null,
+            password : null
+        }
+    };
 
     this.$get = function($q){
 
@@ -233,6 +271,7 @@ angular.module('app').controller('SidenavCtrl', function ($scope, $state, $state
 
     Message.findAllCommunicators().then(function(users){
         $scope.users = users;
+        $scope.loaded = true;
     });
 
     $scope.selectUser = function (user) {
@@ -246,14 +285,15 @@ angular.module('app').controller('SidenavCtrl', function ($scope, $state, $state
     };
 
 });
-angular.module('app').controller('HomeCtrl', function ($scope, Message) {
+angular.module('app').controller('HomeCtrl', function ($scope, Message, MessageUtilService) {
 
     Message.findAll().then(function(messages){
-        $scope.messages = messages;
+        $scope.messages = MessageUtilService.splitByPeriods(messages).reverse();
+        $scope.loaded = true;
     });
 
 });
-angular.module('app').controller('MessageCtrl', function ($rootScope, $scope, Message, $timeout, $stateParams, $location, $anchorScroll) {
+angular.module('app').controller('MessageCtrl', function ($rootScope, $scope, Message, MessageUtilService, $timeout, $stateParams, $location, $anchorScroll) {
 
     var scrollToWhat = function(){
         $timeout(function(){
@@ -271,17 +311,95 @@ angular.module('app').controller('MessageCtrl', function ($rootScope, $scope, Me
     };
 
     Message.findAllByCommunication([$rootScope.user.avatar, $stateParams.avatar]).then(function(messages){
-        $scope.messages = messages;
+        $scope.messages = MessageUtilService.splitByPeriods(messages).reverse();
+        $scope.loaded = true;
         scrollToWhat();
     });
 
     $scope.createMessage = function(){
+        $scope.waiting = true;
         $scope.message.when = (new Date()).getTime();
         Message.save(angular.copy($scope.message)).then(function(message){
-            $scope.messages.push(message);
+            var todayIndex = $scope.messages.length -1;
+            $scope.messages[todayIndex].messages.push(message);
+            $scope.waiting = false;
             scrollToWhat();
         });
         $scope.message.what = '';
+    };
+
+});
+angular.module('app').factory('MessageUtilService', function () {
+
+    var splitByPeriods = function(messages){
+
+        var periods = [{
+            label: 'Today',
+            className: 'md-primary',
+            from: function(){
+                var d = new Date();
+                d.setHours(0,0,0,0);
+                return d.getTime();
+            }
+        },{
+            label: 'Yesterday',
+            className: 'md-accent',
+            from: function(){
+                var d = new Date();
+                d.setHours(0,0,0,0);
+                d.setDate(d.getDate() - 1);
+                return d.getTime();
+            }
+        },{
+            label: 'This week',
+            className: 'md-warn',
+            from: function(){
+                var d = new Date();
+                d.setHours(0,0,0,0);
+                d.setDate(d.getDate() - d.getDay());
+                return d.getTime();
+            }
+        },{
+            label: 'This month',
+            className: 'md-warn',
+            from: function(){
+                var d = new Date();
+                d.setHours(0,0,0,0);
+                d.setDate(0);
+                return d.getTime();
+            }
+        },{
+            label: 'Old',
+            className: 'md-warn',
+            from: function(){
+                return 0;
+            }
+        }];
+
+        var findPeriodIndex = function(date){
+            for(var i in periods){
+                if(date > periods[i].from()){
+                    return i;
+                }
+            }
+        };
+
+        var messagesMap = periods.map(function(period){
+            return {
+                label: period.label,
+                className: period.className,
+                messages: []
+            }
+        });
+        angular.forEach(messages, function(message){
+            var index = findPeriodIndex(message.when);
+            messagesMap[index].messages.push(message);
+        });
+        return messagesMap;
+    };
+
+    return{
+        splitByPeriods: splitByPeriods
     };
 
 });
