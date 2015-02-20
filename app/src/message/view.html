@@ -1,4 +1,8 @@
-<section>
+<section layout="row" layout-align="center center" ng-if="!loaded">
+    <md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
+</section>
+
+<section ng-if="loaded">
     <md-list layout="column">
         <md-subheader class="md-warn">Last year</md-subheader>
         <md-item ng-repeat="message in messages | orderBy:'when'">
@@ -17,7 +21,7 @@
 </section>
 
 <section layout="column" ng-if="message.to">
-    <md-progress-linear class="md-accent" md-mode="indeterminate"></md-progress-linear>
+    <md-progress-linear ng-if="waiting" class="md-accent" md-mode="indeterminate"></md-progress-linear>
     <form id="what" layout="row" ng-submit="createMessage()" class="md-whiteframe-z1 md-primary">
         <span class="{{user.avatar}} avatar" role="img" aria-label="{{user.who}}"></span>
         <md-input-container flex>

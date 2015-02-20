@@ -9,6 +9,7 @@ angular.module('app').controller('SidenavCtrl', function ($scope, $state, $state
 
     Message.findAllCommunicators().then(function(users){
         $scope.users = users;
+        $scope.loaded = true;
     });
 
     $scope.selectUser = function (user) {

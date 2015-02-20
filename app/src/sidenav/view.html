@@ -5,6 +5,9 @@
             <input ng-model="searchedFriend">
         </md-input-container>
     </md-item>
+    <md-item layout="row" layout-align="center center" ng-if="!loaded">
+        <md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
+    </md-item>
     <md-item ng-repeat="u in users | filter:{value:searchedFriend}" ng-if="u.key !== user.avatar">
         <md-item-content>
             <md-button ng-click="selectUser(u)" ng-class="{selected:isSelected(u)}">
