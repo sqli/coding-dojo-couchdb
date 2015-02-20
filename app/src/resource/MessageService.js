@@ -1,10 +1,37 @@
 angular.module('app.resource.message.couchdb', []).provider('Message', function(){
 
-    this.uri = 'http://coding-dojo-couchdb.iriscouch.com/message';
+    /**
+     * Define configuration into angular config phase (app.js)
+     * @type {{uri: null, login: null, password: null}}
+     */
+    this.config = {
+        uri : null,
+        login : null,
+        password : null
+    };
 
+    /**
+     * Service definition
+     * @param $q
+     * @returns {{connect: connect, findAll: findAll, save: save, findAllByCommunication: findAllByCommunication, findAllCommunicators: findAllCommunicators}}
+     */
     this.$get = function($q){
 
-        var db = new PouchDB(this.uri);
+        var config = this.config;
+
+        var db = new PouchDB(config.uri);
+
+        var connect = function(){
+            var deferred = $q.defer();
+            db.login(config.login, config.password,function (err) {
+                if(err){
+                    deferred.reject(err);
+                }else{
+                    deferred.resolve();
+                }
+            });
+            return deferred.promise;
+        };
 
         var findAll = function(){
             var deferred = $q.defer();
@@ -26,6 +53,7 @@ angular.module('app.resource.message.couchdb', []).provider('Message', function(
                 if(err){
                     deferred.reject(err);
                 }else{
+                    // Decorate the nude object with CouchDB attributes : _id, _rev...
                     angular.extend(message, response);
                     deferred.resolve(message);
                 }
@@ -79,7 +107,11 @@ angular.module('app.resource.message.couchdb', []).provider('Message', function(
             return deferred.promise;
         };
 
+        /**
+         * Public service API
+         */
         return {
+            connect: connect,
             findAll: findAll,
             save: save,
             findAllByCommunication: findAllByCommunication,
