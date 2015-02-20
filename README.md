@@ -29,7 +29,7 @@ thanks to a JavaScript [CouchDB](http://couchdb.apache.org/) API : [PouchDB](htt
     'app.resource.message.couchdb' -> 'app.resource.message.tp'
 
 ### Step 2 : Database Initialization
-- Pouchdb documentation : [create database](http://pouchdb.com/api.html#create_database)
+- Pouchdb documentation : [create database + auth](http://pouchdb.com/api.html#create_database)
 - AngularJS documentation : [deal with promise](https://docs.angularjs.org/api/ng/service/$q)
 
 ### Step 3: Database conception
