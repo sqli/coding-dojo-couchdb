@@ -1,28 +1,39 @@
 angular.module('app.resource.message.stub', [
     'ngResource'
-]).factory('Message', function($q, $resource){
+]).provider('Message', function(){
 
-    var findAll = function(){
-        return $resource('src/resource/stub/GET-message.json').query().$promise;
+    this.config = {
+        uri : null,
+        auth: {
+            username : null,
+            password : null
+        }
     };
 
-    var save = function(message){
-        return $q.when(message);
-    };
+    this.$get = function($q, $resource){
 
-    var findAllByCommunication = function(communicators){
-        return $resource('src/resource/stub/GET-message-by-communication.json').query().$promise;
-    };
+        var findAll = function(){
+            return $resource('src/resource/stub/GET-message.json').query().$promise;
+        };
 
-    var findAllCommunicators = function(){
-        return $resource('src/resource/stub/GET-communicators.json').query().$promise;
-    };
+        var save = function(message){
+            return $q.when(message);
+        };
 
-    return {
-        findAll: findAll,
-        save: save,
-        findAllByCommunication: findAllByCommunication,
-        findAllCommunicators: findAllCommunicators
-    }
+        var findAllByCommunication = function(communicators){
+            return $resource('src/resource/stub/GET-message-by-communication.json').query().$promise;
+        };
+
+        var findAllCommunicators = function(){
+            return $resource('src/resource/stub/GET-communicators.json').query().$promise;
+        };
+
+        return {
+            findAll: findAll,
+            save: save,
+            findAllByCommunication: findAllByCommunication,
+            findAllCommunicators: findAllCommunicators
+        }
+    };
 
 });
