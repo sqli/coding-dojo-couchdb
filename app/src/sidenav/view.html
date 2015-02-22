@@ -11,7 +11,7 @@
     <md-item ng-repeat="u in users | filter:{value:searchedFriend}" ng-if="u.key !== user.avatar">
         <md-item-content>
             <md-button ng-click="selectUser(u)" ng-class="{selected:isSelected(u)}">
-                <span class="{{u.key}} avatar"></span>
+                <md-icon md-svg-icon="avatar:{{u.key}}"></md-icon>
                 {{u.value}}
             </md-button>
         </md-item-content>

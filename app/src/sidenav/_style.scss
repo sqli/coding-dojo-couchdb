@@ -1,18 +1,29 @@
 /* Sidenav area */
-
-md-list .md-button {
-  color: inherit;
-  font-weight: 500;
-  text-align: left;
-  width: 100%;
-}
-md-list .md-button.selected {
-  color: #03a9f4;
-}
-
-.avatar {
-  border: 1px solid #ddd;
-  display: inline-block;
-  margin: 0px;
-  vertical-align: middle;
+md-sidenav{
+  md-list{
+    .md-button{
+      color: inherit;
+      font-weight: 500;
+      text-align: left;
+      width: 100%;
+      &.selected{
+        color: #03a9f4;
+      }
+      md-icon {
+        position: relative;
+        width: 128px;
+        height: 128px;
+        border-radius: 50%;
+        display: inline-block;
+        overflow: hidden;
+        zoom: 0.70;
+        transform: translateZ(0);
+        -webkit-transform: scale(0.7);
+        -moz-transform: scale(0.7);
+        border: 1px solid #ddd;
+        margin: 0px;
+        vertical-align: middle;
+      }
+    }
+  }
 }

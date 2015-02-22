@@ -40,7 +40,7 @@ gulp.task('fonts', function () {
 gulp.task('svg', function () {
     return gulp.src([
         'app/svg/*.svg'
-    ]).pipe(gulp.dest('dist/styles/svg'));
+    ]).pipe(gulp.dest('dist/svg'));
 });
 
 gulp.task('template', function () {

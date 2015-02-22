@@ -8,7 +8,7 @@
         <md-item ng-repeat="message in messagesMap.messages track by $index | orderBy:'when'">
             <md-item-content>
                 <div class="md-tile-left">
-                    <span class="{{message.from}} avatar" role="img" aria-label="{{selected.name}}"></span>
+                    <md-icon md-svg-icon="avatar:{{message.from}}"></md-icon>
                 </div>
                 <div class="md-tile-content">
                     <h3>{{message.who}}</h3>
@@ -20,16 +20,16 @@
     </md-list>
 </section>
 
-<section layout="column" ng-if="message.to">
+<section layout="column">
     <md-progress-linear ng-if="waiting" class="md-accent" md-mode="indeterminate"></md-progress-linear>
     <form id="what" layout="row" ng-submit="createMessage()" class="md-whiteframe-z1 md-primary">
-        <span class="{{user.avatar}} avatar" role="img" aria-label="{{user.who}}"></span>
+        <md-icon md-svg-icon="avatar:{{user.avatar}}"></md-icon>
         <md-input-container flex>
             <label>What</label>
             <input ng-model="message.what" columns="1" md-maxlength="150"/>
         </md-input-container>
         <md-button class="md-fab md-raised md-icon-container" aria-label="Reply">
-            <md-inline-grid-icon icon="hangout"></md-inline-grid-icon>
+            <md-icon icon="hangout"></md-icon>
         </md-button>
     </form>
 </section>

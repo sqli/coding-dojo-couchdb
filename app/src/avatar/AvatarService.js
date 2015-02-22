@@ -1,6 +1,8 @@
 'use strict';
 
-angular.module('avatars', []).service('AvatarService', function ($q){
+angular.module('avatars', []).config(function($mdIconProvider){
+    $mdIconProvider.iconSet("avatar", 'svg/avatar-icons.svg', 128);
+}).service('AvatarService', function ($q){
     var avatars = [
         {
             who: 'Lia Lugo',

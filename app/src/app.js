@@ -26,7 +26,7 @@ angular.module('app', [
                     controller: 'SidenavCtrl'
                 },
                 content: {
-                    templateUrl: 'src/message/view.html',
+                    templateUrl: 'src/home/view.html',
                     controller: 'HomeCtrl'
                 }
             }
