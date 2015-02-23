@@ -9,11 +9,11 @@ angular.module('avatars', ['ngResource']).config(function($mdIconProvider){
     // Promise-based API
     return {
         auth: function(){
-            return $resource('src/resource/stub/GET-me.json').get().$promise;
+            return $resource('stub/GET-me.json').get().$promise;
         },
         loadAll : function() {
             var deferred = $q.defer();
-            $resource('src/resource/stub/GET-avatars.json').query().$promise.then(function(avatars){
+            $resource('stub/GET-avatars.json').query().$promise.then(function(avatars){
                 avatarsCache = avatars;
                 deferred.resolve(avatarsCache);
             }, deferred.reject);

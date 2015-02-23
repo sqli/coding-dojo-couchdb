@@ -38,11 +38,19 @@ angular.module('app.resource.message.tp', []).provider('Message', function(){
             return deferred.promise;
         };
 
+        var findMyRelations = function(){
+            var deferred = $q.defer();
+            //deferred.resolve();
+            //deferred.reject();
+            return deferred.promise;
+        };
+
         return {
             findAll: findAll,
             save: save,
             findAllByCommunication: findAllByCommunication,
-            findAllCommunicators: findAllCommunicators
+            findAllCommunicators: findAllCommunicators,
+            findMyRelations: findMyRelations
         }
     };
 

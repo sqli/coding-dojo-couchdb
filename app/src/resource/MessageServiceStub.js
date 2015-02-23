@@ -13,7 +13,7 @@ angular.module('app.resource.message.stub', [
     this.$get = function($q, $resource){
 
         var findAll = function(){
-            return $resource('src/resource/stub/GET-message.json').query().$promise;
+            return $resource('stub/GET-message.json').query().$promise;
         };
 
         var save = function(message){
@@ -21,18 +21,23 @@ angular.module('app.resource.message.stub', [
         };
 
         var findAllByCommunication = function(communicators){
-            return $resource('src/resource/stub/GET-message-by-communication.json').query().$promise;
+            return $resource('stub/GET-message-by-communication.json').query().$promise;
         };
 
         var findAllCommunicators = function(){
-            return $resource('src/resource/stub/GET-communicators.json').query().$promise;
+            return $resource('stub/GET-communicators.json').query().$promise;
+        };
+
+        var findMyRelations = function(){
+            return $resource('stub/GET-relations.json').query().$promise;
         };
 
         return {
             findAll: findAll,
             save: save,
             findAllByCommunication: findAllByCommunication,
-            findAllCommunicators: findAllCommunicators
+            findAllCommunicators: findAllCommunicators,
+            findMyRelations: findMyRelations
         }
     };
 

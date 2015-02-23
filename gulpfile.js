@@ -43,6 +43,12 @@ gulp.task('svg', function () {
     ]).pipe(gulp.dest('dist/svg'));
 });
 
+gulp.task('stub', function () {
+    return gulp.src([
+        'stub/*.json'
+    ]).pipe(gulp.dest('dist/stub'));
+});
+
 gulp.task('template', function () {
     return gulp.src(['app/app_components/**/*.html', 'app/src/**/*.html']).pipe(angularTemplatecache({
         module: 'app', root: 'src/'
