@@ -16,6 +16,11 @@ angular.module('app', [
     $stateProvider
         .state('main', {
             url: '/',
+            resolve: {
+                avatars: function(AvatarService){
+                    return AvatarService.loadAll();
+                }
+            },
             views: {
                 toolbar: {
                     templateUrl: 'src/toolbar/view.html',

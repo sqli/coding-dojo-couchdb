@@ -95,6 +95,34 @@ angular.module('app.resource.message.couchdb', []).provider('Message', function(
             return deferred.promise;
         };
 
+        var findMyRelations = function(avatar){
+            var id = parseInt(avatar.split('-')[1]);
+            var deferred = $q.defer();
+            db.query({
+                map: function(doc) {
+                    var getKey = function(avatar){
+                        return parseInt(avatar.split('-')[1]);
+                    };
+                    var keys = [getKey(doc.to), getKey(doc.from)];
+                    emit(keys, doc.who);
+                },
+                reduce: function(key, value){
+                    return [value[0], key.length];
+                }
+            }, {
+                startkey: [id, 1],
+                endkey: [id, 16],
+                group : true
+            }, function(err, doc) {
+                if(err){
+                    deferred.reject(err);
+                }else{
+                    deferred.resolve(doc.rows);
+                }
+            });
+            return deferred.promise;
+        };
+
         /**
          * Public service API
          */
@@ -102,7 +130,8 @@ angular.module('app.resource.message.couchdb', []).provider('Message', function(
             findAll: findAll,
             save: save,
             findAllByCommunication: findAllByCommunication,
-            findAllCommunicators: findAllCommunicators
+            findAllCommunicators: findAllCommunicators,
+            findMyRelations: findMyRelations
         }
     };
 
