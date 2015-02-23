@@ -16,6 +16,11 @@ angular.module('app', [
     $stateProvider
         .state('main', {
             url: '/',
+            resolve: {
+                avatars: function(AvatarService){
+                    return AvatarService.loadAll();
+                }
+            },
             views: {
                 toolbar: {
                     templateUrl: 'src/toolbar/view.html',
@@ -153,6 +158,34 @@ angular.module('app.resource.message.couchdb', []).provider('Message', function(
             return deferred.promise;
         };
 
+        var findMyRelations = function(avatar){
+            var id = parseInt(avatar.split('-')[1]);
+            var deferred = $q.defer();
+            db.query({
+                map: function(doc) {
+                    var getKey = function(avatar){
+                        return parseInt(avatar.split('-')[1]);
+                    };
+                    var keys = [getKey(doc.to), getKey(doc.from)];
+                    emit(keys, doc.who);
+                },
+                reduce: function(key, value){
+                    return [value[0], key.length];
+                }
+            }, {
+                startkey: [id, 1],
+                endkey: [id, 16],
+                group : true
+            }, function(err, doc) {
+                if(err){
+                    deferred.reject(err);
+                }else{
+                    deferred.resolve(doc.rows);
+                }
+            });
+            return deferred.promise;
+        };
+
         /**
          * Public service API
          */
@@ -160,7 +193,8 @@ angular.module('app.resource.message.couchdb', []).provider('Message', function(
             findAll: findAll,
             save: save,
             findAllByCommunication: findAllByCommunication,
-            findAllCommunicators: findAllCommunicators
+            findAllCommunicators: findAllCommunicators,
+            findMyRelations: findMyRelations
         }
     };
 
@@ -285,50 +319,15 @@ angular.module('app').controller('SidenavCtrl', function ($scope, $state, $state
     };
 
 });
-angular.module('app').controller('HomeCtrl', function ($scope, Message, MessageUtilService) {
+angular.module('app').controller('HomeCtrl', function ($rootScope, $scope, Message, MessageUtilService, AvatarService, $state) {
 
-    Message.findAll().then(function(messages){
-        $scope.messages = MessageUtilService.splitByPeriods(messages).reverse();
-        $scope.loaded = true;
-    });
-
-    var buildGridModel = function (tileTmpl){
-        var it, results = [ ];
-        for (var j=0; j<11; j++) {
-            it = angular.extend({},tileTmpl);
-            it.icon  = it.icon + (j+1);
-            it.title = it.title + (j+1);
-            it.span  = { row : "1", col : "1" };
-            switch(j+1) {
-                case 1:
-                    it.background = "red";
-                    it.span.row = it.span.col = 2;
-                    break;
-                case 2: it.background = "green";         break;
-                case 3: it.background = "darkBlue";      break;
-                case 4:
-                    it.background = "blue";
-                    it.span.col = 2;
-                    break;
-                case 5:
-                    it.background = "yellow";
-                    it.span.row = it.span.col = 2;
-                    break;
-                case 6: it.background = "pink";          break;
-                case 7: it.background = "darkBlue";      break;
-                case 8: it.background = "purple";        break;
-                case 9: it.background = "deepBlue";      break;
-                case 10: it.background = "lightPurple";  break;
-                case 11: it.background = "yellow";       break;
-            }
-            results.push(it);
-        }
-        return results;
+    $scope.goToConversation = function(avatar){
+        $state.go('message', {avatar: avatar});
     };
-    $scope.tiles = buildGridModel({
-        icon : "avatar:svg-",
-        title: "Svg-",
-        background: ""
+
+    Message.findMyRelations($rootScope.user.avatar).then(function(users){
+        $scope.tiles = MessageUtilService.toTiles(users);
+        $scope.loaded = true;
     });
 
 });
@@ -368,7 +367,7 @@ angular.module('app').controller('MessageCtrl', function ($rootScope, $scope, Me
     };
 
 });
-angular.module('app').factory('MessageUtilService', function () {
+angular.module('app').factory('MessageUtilService', function (AvatarService) {
 
     var splitByPeriods = function(messages){
 
@@ -437,8 +436,63 @@ angular.module('app').factory('MessageUtilService', function () {
         return messagesMap;
     };
 
+    var toTiles = function(users){
+        var byNbOfConversation = function(r1, r2){
+            return (r1.value[1] > r2.value[1])? -1: 1;
+        };
+        var mapToTiles = function(u){
+            var avatar = 'svg-' + u.key[1];
+            var spanCalculation = function(nbOfConversations, boundary){
+                boundary.max = boundary.max - boundary.min;
+                nbOfConversations -= boundary.min;
+                var percent = nbOfConversations / boundary.max * 100;
+                var result = {
+                    row : 1,
+                    col : 1
+                };
+                if(percent > 66){
+                    result = {
+                        row : 2,
+                        col : 2
+                    }
+                }else if(percent > 33){
+                    result = {
+                        row : 1,
+                        col : 2
+                    }
+                }
+                return result;
+            };
+            var getBoundary = function(nbs){
+                var result = {
+                    min: Number.MAX_VALUE,
+                    max: 0
+                };
+                for(var i in nbs){
+                    if(nbs[i] > result.max){
+                        result.max = nbs[i];
+                    }
+                    if(nbs[i] < result.min){
+                        result.min = nbs[i];
+                    }
+                }
+                return result;
+            };
+            return {
+                avatar: avatar,
+                title: u.value[0],
+                background: AvatarService.findColorByAvatar(avatar),
+                span: spanCalculation(u.value[1], getBoundary(users.map(function(u){
+                    return u.value[1];
+                })))
+            };
+        };
+        return users.sort(byNbOfConversation).map(mapToTiles);
+    };
+
     return{
-        splitByPeriods: splitByPeriods
+        splitByPeriods: splitByPeriods,
+        toTiles: toTiles
     };
 
 });
@@ -464,83 +518,31 @@ angular.module('app').controller('BottomSheetCtrl', function($scope, $mdBottomSh
 });
 'use strict';
 
-angular.module('avatars', []).config(function($mdIconProvider){
-    $mdIconProvider.iconSet("avatar", 'svg/avatar-icons.svg', 128);
-}).service('AvatarService', function ($q){
-    var avatars = [
-        {
-            who: 'Lia Lugo',
-            avatar: 'svg-1'
-        },
-        {
-            who: 'George Duke',
-            avatar: 'svg-2'
-        },
-        {
-            who: 'Gener Delosreyes',
-            avatar: 'svg-3'
-        },
-        {
-            who: 'Lawrence Ray',
-            avatar: 'svg-4'
-        },
-        {
-            who: 'Ernesto Urbina',
-            avatar: 'svg-5'
-        },
-        {
-            who: 'Gani Ferrer',
-            avatar: 'svg-6'
-        },
-        {
-            who: 'Antonio Banderas',
-            avatar: 'svg-7'
-        },
-        {
-            who: 'Alpha Blondie',
-            avatar: 'svg-8'
-        },
-        {
-            who: 'Miss Strong',
-            avatar: 'svg-9'
-        },
-        {
-            who: 'Danny the dog',
-            avatar: 'svg-10'
-        },
-        {
-            who: 'Cat Stevens',
-            avatar: 'svg-11'
-        },
-        {
-            who: 'Michelle Obama',
-            avatar: 'svg-12'
-        },
-        {
-            who: 'Bonnie Gates',
-            avatar: 'svg-13'
-        },
-        {
-            who: 'Bruce Lee',
-            avatar: 'svg-14'
-        },
-        {
-            who: 'Margarette Thatcher',
-            avatar: 'svg-15'
-        },
-        {
-            who: 'Bill Gates',
-            avatar: 'svg-16'
-        }
-    ];
+angular.module('avatars', ['ngResource']).config(function($mdIconProvider){
+    $mdIconProvider.iconSet('avatar', 'svg/avatar-icons.svg', 128);
+}).service('AvatarService', function ($q, $resource){
+
+    var avatarsCache = [];
 
     // Promise-based API
     return {
         auth: function(){
-            return $q.when(avatars[Math.floor(Math.random()*avatars.length)]);
+            return $resource('src/resource/stub/GET-me.json').get().$promise;
         },
         loadAll : function() {
-            return $q.when(avatars);
+            var deferred = $q.defer();
+            $resource('src/resource/stub/GET-avatars.json').query().$promise.then(function(avatars){
+                avatarsCache = avatars;
+                deferred.resolve(avatarsCache);
+            }, deferred.reject);
+            return deferred.promise;
+        },
+        findColorByAvatar: function(avatar){
+            for(var i in avatarsCache){
+                if(avatarsCache[i].avatar === avatar){
+                    return avatarsCache[i].background;
+                }
+            }
         }
     };
 });
