@@ -45,7 +45,7 @@ gulp.task('svg', function () {
 
 gulp.task('stub', function () {
     return gulp.src([
-        'stub/*.json'
+        'app/stub/*.json'
     ]).pipe(gulp.dest('dist/stub'));
 });
 
@@ -87,7 +87,7 @@ gulp.task('serve', ['styles', 'watch'], function () {
     open('http://localhost:9000/#/');
 });
 
-gulp.task('dist', ['i18n','fonts', 'svg', 'html', 'template']);
+gulp.task('dist', ['i18n','fonts', 'svg', 'stub', 'html', 'template']);
 
 gulp.task('deploy', ['dist'], function () {
     return gulp.src('dist/**/*').pipe(deploy({

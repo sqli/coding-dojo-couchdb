@@ -1,6 +1,14 @@
-<div layout="row">
-    <button ng-click="toggleSidenav('left')" hide-gt-sm class="menuBtn">
-        <span class="visuallyhidden">Menu</span>
-    </button>
-    <a class="md-toolbar-tools" ui-sref="main">AngularJS Material App</a>
-</div>
+<button ng-click="toggleSidenav('left')" hide-gt-sm class="menuBtn">
+    <span class="visuallyhidden">Menu</span>
+</button>
+<a class="md-toolbar-tools" ui-sref="main">AngularJS Material App</a>
+<md-select layout="left" ng-model="userSelected" md-on-open="loadUsers()">
+    <md-select-label>
+        <md-icon md-svg-icon="avatar:{{user.avatar}}"></md-icon>
+        {{user.who}}
+    </md-select-label>
+    <md-option ng-value="avatar" ng-repeat="avatar in avatars">
+        <md-icon md-svg-icon="avatar:{{avatar.avatar}}"></md-icon>
+        {{avatar.who}}
+    </md-option>
+</md-select>
