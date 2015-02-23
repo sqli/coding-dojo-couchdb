@@ -214,7 +214,7 @@ angular.module('app.resource.message.stub', [
     this.$get = function($q, $resource){
 
         var findAll = function(){
-            return $resource('src/resource/stub/GET-message.json').query().$promise;
+            return $resource('stub/GET-message.json').query().$promise;
         };
 
         var save = function(message){
@@ -222,18 +222,23 @@ angular.module('app.resource.message.stub', [
         };
 
         var findAllByCommunication = function(communicators){
-            return $resource('src/resource/stub/GET-message-by-communication.json').query().$promise;
+            return $resource('stub/GET-message-by-communication.json').query().$promise;
         };
 
         var findAllCommunicators = function(){
-            return $resource('src/resource/stub/GET-communicators.json').query().$promise;
+            return $resource('stub/GET-communicators.json').query().$promise;
+        };
+
+        var findMyRelations = function(){
+            return $resource('stub/GET-relations.json').query().$promise;
         };
 
         return {
             findAll: findAll,
             save: save,
             findAllByCommunication: findAllByCommunication,
-            findAllCommunicators: findAllCommunicators
+            findAllCommunicators: findAllCommunicators,
+            findMyRelations: findMyRelations
         }
     };
 
@@ -278,11 +283,19 @@ angular.module('app.resource.message.tp', []).provider('Message', function(){
             return deferred.promise;
         };
 
+        var findMyRelations = function(){
+            var deferred = $q.defer();
+            //deferred.resolve();
+            //deferred.reject();
+            return deferred.promise;
+        };
+
         return {
             findAll: findAll,
             save: save,
             findAllByCommunication: findAllByCommunication,
-            findAllCommunicators: findAllCommunicators
+            findAllCommunicators: findAllCommunicators,
+            findMyRelations: findMyRelations
         }
     };
 
@@ -527,11 +540,11 @@ angular.module('avatars', ['ngResource']).config(function($mdIconProvider){
     // Promise-based API
     return {
         auth: function(){
-            return $resource('src/resource/stub/GET-me.json').get().$promise;
+            return $resource('stub/GET-me.json').get().$promise;
         },
         loadAll : function() {
             var deferred = $q.defer();
-            $resource('src/resource/stub/GET-avatars.json').query().$promise.then(function(avatars){
+            $resource('stub/GET-avatars.json').query().$promise.then(function(avatars){
                 avatarsCache = avatars;
                 deferred.resolve(avatarsCache);
             }, deferred.reject);
