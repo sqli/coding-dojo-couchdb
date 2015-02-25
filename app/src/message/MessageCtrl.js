@@ -16,7 +16,7 @@ angular.module('app').controller('MessageCtrl', function ($rootScope, $scope, Me
     };
 
     Message.findAllByCommunication([$rootScope.user.avatar, $stateParams.avatar]).then(function(messages){
-        $scope.messages = MessageUtilService.splitByPeriods(messages).reverse();
+        $scope.messages = MessageUtilService.splitByPeriodsAndSort(messages).reverse();
         $scope.loaded = true;
         scrollToWhat();
     });
