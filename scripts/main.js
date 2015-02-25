@@ -379,7 +379,7 @@ angular.module('app').controller('MessageCtrl', function ($rootScope, $scope, Me
     };
 
     Message.findAllByCommunication([$rootScope.user.avatar, $stateParams.avatar]).then(function(messages){
-        $scope.messages = MessageUtilService.splitByPeriods(messages).reverse();
+        $scope.messages = MessageUtilService.splitByPeriodsAndSort(messages).reverse();
         $scope.loaded = true;
         scrollToWhat();
     });
@@ -399,7 +399,7 @@ angular.module('app').controller('MessageCtrl', function ($rootScope, $scope, Me
 });
 angular.module('app').factory('MessageUtilService', function (AvatarService) {
 
-    var splitByPeriods = function(messages){
+    var splitByPeriodsAndSort = function(messages){
 
         var periods = [{
             label: 'Today',
@@ -459,11 +459,21 @@ angular.module('app').factory('MessageUtilService', function (AvatarService) {
                 messages: []
             }
         });
+
+        var sortPeriod = function(messagesMap){
+            messagesMap.forEach(function(el){
+                el.messages.sort(function(m1, m2){
+                    return m1.when > m2.when ? 1: -1;
+                });
+            });
+            return messagesMap;
+        };
+
         angular.forEach(messages, function(message){
             var index = findPeriodIndex(message.when);
             messagesMap[index].messages.push(message);
         });
-        return messagesMap;
+        return sortPeriod(messagesMap);
     };
 
     var toTiles = function(users){
@@ -521,7 +531,7 @@ angular.module('app').factory('MessageUtilService', function (AvatarService) {
     };
 
     return{
-        splitByPeriods: splitByPeriods,
+        splitByPeriodsAndSort: splitByPeriodsAndSort,
         toTiles: toTiles
     };
 
