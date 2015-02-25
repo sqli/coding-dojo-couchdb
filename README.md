@@ -48,5 +48,8 @@ thanks to a JavaScript [CouchDB](http://couchdb.apache.org/) API : [PouchDB](htt
 ### Step 7: Find all by communication
 - Pouchdb documentation : [query options](http://pouchdb.com/api.html#query_database)
 
+### Step 8: Find my relations
+- Pouchdb documentation : [query options](http://pouchdb.com/api.html#query_database)
+
 ## Result
 [MessageService.js](https://github.com/sqli/coding-dojo-couchdb/tree/master/app/src/resource/MessageService.js)
