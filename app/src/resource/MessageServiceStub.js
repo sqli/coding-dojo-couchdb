@@ -16,6 +16,10 @@ angular.module('app.resource.message.stub', [
             return $resource('stub/GET-message.json').query().$promise;
         };
 
+        var findAllCommunicators = function(){
+            return $resource('stub/GET-communicators.json').query().$promise;
+        };
+
         var save = function(message){
             return $q.when(message);
         };
@@ -24,19 +28,15 @@ angular.module('app.resource.message.stub', [
             return $resource('stub/GET-message-by-communication.json').query().$promise;
         };
 
-        var findAllCommunicators = function(){
-            return $resource('stub/GET-communicators.json').query().$promise;
-        };
-
-        var findMyRelations = function(){
+        var findMyRelations = function(avatar){
             return $resource('stub/GET-relations.json').query().$promise;
         };
 
         return {
             findAll: findAll,
+            findAllCommunicators: findAllCommunicators,
             save: save,
             findAllByCommunication: findAllByCommunication,
-            findAllCommunicators: findAllCommunicators,
             findMyRelations: findMyRelations
         }
     };

@@ -30,23 +30,25 @@ thanks to a JavaScript [CouchDB](http://couchdb.apache.org/) API : [PouchDB](htt
 
 ### Step 2 : Database Initialization
 - Pouchdb documentation : [create database + auth](http://pouchdb.com/api.html#create_database)
+- Configuration of the URI and Auth : [MessageProvider.config](https://github.com/sqli/coding-dojo-couchdb/blob/master/app/src/app.js)
 - AngularJS documentation : [deal with promise](https://docs.angularjs.org/api/ng/service/$q)
 
 ### Step 3: Database conception
 - NOSQL documentation : [Denormalization](https://highlyscalable.wordpress.com/2012/03/01/nosql-data-modeling-techniques/)
+- The single "table" : [message/_all_docs?include_docs=true](http://coding-dojo-couchdb.iriscouch.com/message/_all_docs?include_docs=true)
 
 ### Step 4: Find all messages
 - Pouchdb documentation : [batch fetch](http://pouchdb.com/api.html#batch_fetch)
 
 ### Step 5: Find all communicators
 - CouchDB futon : [map reduce query](http://coding-dojo-couchdb.iriscouch.com/_utils/database.html?message/_temp_view)
-- Pouchdb documentation : [query database](http://pouchdb.com/api.html#query_database)
+- Pouchdb documentation : [query database + {group : true}](http://pouchdb.com/api.html#query_database)
 
 ### Step 6: Save message
 - Pouchdb documentation : [create document](http://pouchdb.com/api.html#create_document)
 
 ### Step 7: Find all by communication
-- Pouchdb documentation : [query options](http://pouchdb.com/api.html#query_database)
+- Pouchdb documentation : [query options + {startkey: xx, endKey: xx}](http://pouchdb.com/api.html#query_database)
 
 ### Step 8: Find my relations
 - Pouchdb documentation : [query options](http://pouchdb.com/api.html#query_database)
